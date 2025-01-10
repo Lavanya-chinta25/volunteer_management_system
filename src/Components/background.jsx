@@ -6,7 +6,7 @@ import robo4 from "../assets/robo4.png";
 import robo5 from "../assets/robo5.png";
 import robo6 from "../assets/robo6.png";
 
-const RoboAnimationWithBubbles = () => {
+const Background = () => {
   const roboImages = [robo1, robo2, robo3, robo4, robo5, robo6];
   const roboPositions = [
     { top: "15%", left: "17%" },
@@ -67,4 +67,4 @@ const RoboAnimationWithBubbles = () => {
   );
 };
 
-export default RoboAnimationWithBubbles;
+export default Background;
