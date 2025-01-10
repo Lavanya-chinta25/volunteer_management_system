@@ -15,9 +15,10 @@ exports.authenticate = async (req, res, next) => {
     }
 };
 
-exports.isAdmin = (req, res, next) => {
-    if (req.user.role !== 'Admin') {
-        return res.status(403).json({ message: 'Access Denied. Admins only.' });
+exports.isAuthorized = (req, res, next) => {
+    if (req.user.role !== 'Admin' && req.user.role !== 'Coordinator') {
+        return res.status(403).json({ message: 'Access Denied. Admins or Coordinators only.' });
     }
     next();
 };
+
