@@ -1,32 +1,31 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // For navigation
-import { toast } from "react-toastify"; // Import the toast function
-import "react-toastify/dist/ReactToastify.css"; // Import the styles
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
-  const [teckziteId, setTeckziteId] = useState(""); // State for Teckzite ID input
-  const navigate = useNavigate(); // Hook to navigate to Dashboard on success
+  const [teckziteId, setTeckziteId] = useState(""); 
+  const navigate = useNavigate(); 
 
-  // Handle input change
   const handleInputChange = (e) => {
     setTeckziteId(e.target.value);
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check if ID starts with "tz25v" and has a length of 8
+    // "tz25v" and length 8
     if (!teckziteId) {
       toast.error("Please enter your Teckzite ID.", { position: "top-center" });
-      setTeckziteId(""); // Reset the input field
-    } else if (teckziteId.length !== 8 || !teckziteId.toLowerCase().startsWith("tz25v") || isNaN(teckziteId.slice(5))) {
+      setTeckziteId(""); 
+    } 
+    else if (teckziteId.length !== 8 || !teckziteId.toLowerCase().startsWith("tz25v") || isNaN(teckziteId.slice(5))) {
       toast.error("Teckzite ID must start with 'tz25v' followed by a number and have a total length of 8 characters.", { position: "top-center" });
-      setTeckziteId(""); // Reset the input field
-    } else {
-      // Success - Navigate to Dashboard
+      setTeckziteId(""); 
+    }
+     else {
       toast.success("Login Successful!", { position: "top-center" });
-      navigate("/dashboard"); // Assuming '/dashboard' is the route for the dashboard component
+      navigate("/dashboard");
     }
   };
 

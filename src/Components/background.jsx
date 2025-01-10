@@ -8,8 +8,6 @@ import robo6 from "../assets/robo6.png";
 
 const RoboAnimationWithBubbles = () => {
   const roboImages = [robo1, robo2, robo3, robo4, robo5, robo6];
-
-  // Fixed positions for Robo images
   const roboPositions = [
     { top: "15%", left: "17%" },
     { top: "70%", left: "70%" },
@@ -19,7 +17,6 @@ const RoboAnimationWithBubbles = () => {
     { top: "5%", left: "55%" },
   ];
 
-  // Precompute bubble positions and styles for consistency across refreshes
   const [bubbles, setBubbles] = useState([]);
 
   useEffect(() => {
@@ -36,12 +33,11 @@ const RoboAnimationWithBubbles = () => {
       return bubbleData;
     };
 
-    setBubbles(generateBubbles(50)); // Generate 30 bubbles
+    setBubbles(generateBubbles(50));
   }, []);
 
   return (
     <div className="relative h-screen w-screen bg-black overflow-hidden">
-      {/* Robo Images */}
       {roboImages.map((robo, index) => (
         <img
           key={index}
@@ -54,8 +50,6 @@ const RoboAnimationWithBubbles = () => {
           }}
         />
       ))}
-
-      {/* Bubbles */}
       {bubbles.map((bubble, index) => (
         <div
           key={index}
