@@ -68,6 +68,7 @@ exports.uploadPhoto = async (req, res) => {
 
         res.status(200).json({ message: 'Photo uploaded successfully', photo: user.photo });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error now' });
     }
 };
+//password added
