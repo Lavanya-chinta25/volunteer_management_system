@@ -11,14 +11,38 @@ const generateToken = (userId) => {
     });
 };
 
+// Helper function to generate a password
+const generatePassword = () => {
+    return `TZP${Math.floor(1000 + Math.random() * 9000)}`; // Example: TZP1234
+};
+
 // Add a new user (only for admins)
 exports.addUser = async (req, res) => {
     const { branch, year, phone, club, role, photo, creditScore } = req.body;
     try {
         const tzId = `TZ25V${Math.floor(100 + Math.random() * 900)}`;
-        const user = new User({ tzId, branch, year, phone, club, role, photo, creditScore });
+        const password = generatePassword(); // Generate a password
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+
+        const user = new User({
+            tzId,
+            password: hashedPassword,
+            branch,
+            year,
+            phone,
+            club,
+            role,
+            photo,
+            creditScore,
+        });
+
         await user.save();
-        res.status(201).json({ message: 'User added successfully', tzId });
+
+        res.status(201).json({
+            message: 'User added successfully',
+            tzId,
+            password: `Generated password is: ${password}`, // Provide the generated password
+        });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
@@ -26,10 +50,14 @@ exports.addUser = async (req, res) => {
 
 // Login user and set JWT in cookie
 exports.loginUser = async (req, res) => {
-    const { tzId } = req.body;
+    const { tzId, password } = req.body;
     try {
         const user = await User.findOne({ tzId });
         if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // Validate the password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
         // Generate a token
         const token = generateToken(user._id);
@@ -56,6 +84,7 @@ exports.logoutUser = (req, res) => {
 exports.uploadPhoto = async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+        console.log(req.file);
 
         // Update user's photo field in the database
         const user = await User.findByIdAndUpdate(
