@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const express = require('express');
 const { addUser, loginUser, logoutUser, uploadPhoto } = require('../controllers/authController');
 const { authenticate, isAdmin } = require('../middlewares/authMiddleware');
