@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState(""); // State for password
   const navigate = useNavigate();
 
+  // Handles input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "tzId") {
@@ -17,55 +18,52 @@ const Login = () => {
     }
   };
 
+  // Handles form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!tzId) {
       toast.error("Please enter your Teckzite ID.", { position: "top-center" });
-      setTzId("");
-    } else if (!password) {
+      return;
+    }
+    if (!password) {
       toast.error("Please enter your password.", { position: "top-center" });
-      setPassword("");
-    } else if (
+      return;
+    }
+    if (
       tzId.length !== 8 ||
       !tzId.toUpperCase().startsWith("TZ25V") ||
       isNaN(tzId.slice(5))
     ) {
       toast.error(
-        "Teckzite ID must start with 'tz25v' followed by a number and have a total length of 8 characters.",
+        "Teckzite ID must start with 'TZ25V' followed by a number and have a total length of 8 characters.",
         { position: "top-center" }
       );
-      setTzId("");
-    } else {
-      try {
-        const response = await fetch("http://localhost:5000/api/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ tzId: tzId.toUpperCase(), password }),
-        });
+      return;
+    }
 
-        const data = await response.json();
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Include cookies in the request
+        body: JSON.stringify({ tzId: tzId.toUpperCase(), password }),
+      });
 
-        if (response.ok) {
-          toast.success(data.message, { position: "top-center" });
-          localStorage.setItem("token", data.token); // Store token
-          localStorage.setItem("role", data.role); // Store role for further use
-          navigate("/dashboard"); // Navigate to dashboard
-        } else {
-          toast.error(data.message, { position: "top-center" });
-          setTzId("");
-          setPassword("");
-        }
-      } catch (error) {
-        toast.error(
-          "An error occurred while logging in. Please try again.",
-          { position: "top-center" }
-        );
-        setTzId("");
-        setPassword("");
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message, { position: "top-center" });
+        navigate("/dashboard"); // Navigate to dashboard after successful login
+      } else {
+        toast.error(data.message, { position: "top-center" });
       }
+    } catch (error) {
+      toast.error("An error occurred while logging in. Please try again.", {
+        position: "top-center",
+      });
     }
   };
 

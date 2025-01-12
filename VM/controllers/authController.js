@@ -19,26 +19,36 @@ const generatePassword = () => {
 // Add a new user (only for admins)
 // Add a new user (only for admins)
 exports.addUser = async (req, res) => {
-    const { name, branch, year, phone, club, role, photo, creditScore } = req.body; // Include name in destructuring
+    const { name, branch, year, phone, club, role } = req.body;
+    console.log(req.body); // Include name in destructuring
     try {
-        const tzId = `TZ25V${Math.floor(100 + Math.random() * 900)}`; // Generate unique tzId
+        const tzId = `TZ25V${Date.now() % 100000}`; // Timestamp-based ID to ensure uniqueness
+        // Generate unique tzId
         const password = generatePassword(); // Generate a password
         const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
 
+        // Extract numeric part from year (e.g., "E2" -> 2)
+        const numericYear = parseInt(year.match(/\d+/)?.[0]); // This will extract the numeric part
+
+        if (isNaN(numericYear)) {
+            return res.status(400).json({ message: "Invalid year format. Year should contain a number." });
+        }
+
         const user = new User({
             tzId,
-            name, // Save name in the database
+            name,
             password: hashedPassword,
             branch,
-            year,
+            year: numericYear, // Store the numeric value of year
             phone,
             club,
             role,
-            photo,
-            creditScore,
         });
+        
+        console.log("created");
 
         await user.save();
+        console.log("saved");
 
         res.status(201).json({
             message: 'User added successfully',
