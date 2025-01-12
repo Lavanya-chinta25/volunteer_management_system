@@ -24,6 +24,7 @@ const seedAdminUser = async () => {
 
             // Create a new admin user
             const admin = new User({
+                name:"Datta",
                 tzId,
                 password: hashedPassword,
                 branch: 'N/A',

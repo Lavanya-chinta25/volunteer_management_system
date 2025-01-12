@@ -17,15 +17,17 @@ const generatePassword = () => {
 };
 
 // Add a new user (only for admins)
+// Add a new user (only for admins)
 exports.addUser = async (req, res) => {
-    const { branch, year, phone, club, role, photo, creditScore } = req.body;
+    const { name, branch, year, phone, club, role, photo, creditScore } = req.body; // Include name in destructuring
     try {
-        const tzId = `TZ25V${Math.floor(100 + Math.random() * 900)}`;
+        const tzId = `TZ25V${Math.floor(100 + Math.random() * 900)}`; // Generate unique tzId
         const password = generatePassword(); // Generate a password
         const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
 
         const user = new User({
             tzId,
+            name, // Save name in the database
             password: hashedPassword,
             branch,
             year,
@@ -47,6 +49,7 @@ exports.addUser = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
 
 // Login user and set JWT in cookie
 exports.loginUser = async (req, res) => {
