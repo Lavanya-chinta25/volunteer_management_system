@@ -1,31 +1,71 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; 
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
-  const [teckziteId, setTeckziteId] = useState(""); 
-  const navigate = useNavigate(); 
+  const [tzId, setTzId] = useState(""); // State for Teckzite ID
+  const [password, setPassword] = useState(""); // State for password
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
-    setTeckziteId(e.target.value);
+    const { name, value } = e.target;
+    if (name === "tzId") {
+      setTzId(value);
+    } else if (name === "password") {
+      setPassword(value);
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // "tz25v" and length 8
-    if (!teckziteId) {
+    if (!tzId) {
       toast.error("Please enter your Teckzite ID.", { position: "top-center" });
-      setTeckziteId(""); 
-    } 
-    else if (teckziteId.length !== 8 || !teckziteId.toLowerCase().startsWith("tz25v") || isNaN(teckziteId.slice(5))) {
-      toast.error("Teckzite ID must start with 'tz25v' followed by a number and have a total length of 8 characters.", { position: "top-center" });
-      setTeckziteId(""); 
-    }
-     else {
-      toast.success("Login Successful!", { position: "top-center" });
-      navigate("/dashboard");
+      setTzId("");
+    } else if (!password) {
+      toast.error("Please enter your password.", { position: "top-center" });
+      setPassword("");
+    } else if (
+      tzId.length !== 8 ||
+      !tzId.toUpperCase().startsWith("TZ25V") ||
+      isNaN(tzId.slice(5))
+    ) {
+      toast.error(
+        "Teckzite ID must start with 'tz25v' followed by a number and have a total length of 8 characters.",
+        { position: "top-center" }
+      );
+      setTzId("");
+    } else {
+      try {
+        const response = await fetch("http://localhost:5000/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ tzId: tzId.toUpperCase(), password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          toast.success(data.message, { position: "top-center" });
+          localStorage.setItem("token", data.token); // Store token
+          localStorage.setItem("role", data.role); // Store role for further use
+          navigate("/dashboard"); // Navigate to dashboard
+        } else {
+          toast.error(data.message, { position: "top-center" });
+          setTzId("");
+          setPassword("");
+        }
+      } catch (error) {
+        toast.error(
+          "An error occurred while logging in. Please try again.",
+          { position: "top-center" }
+        );
+        setTzId("");
+        setPassword("");
+      }
     }
   };
 
@@ -40,9 +80,19 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <input
             type="text"
-            value={teckziteId}
+            name="tzId"
+            value={tzId}
             onChange={handleInputChange}
             placeholder="Enter Teckzite ID"
+            className="w-full px-4 py-2 mb-4 text-black rounded-lg outline-none focus:ring-2 focus:ring-gray-400"
+            style={{ fontFamily: "Poppins, sans-serif" }}
+          />
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={handleInputChange}
+            placeholder="Enter Password"
             className="w-full px-4 py-2 mb-4 text-black rounded-lg outline-none focus:ring-2 focus:ring-gray-400"
             style={{ fontFamily: "Poppins, sans-serif" }}
           />

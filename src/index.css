@@ -26,3 +26,22 @@ body {
 }
 
 
+@media (max-width: 768px) {
+  .title {
+    padding-left: 2rem; /* Add spacing around the title */
+    font-size: 1.25rem; /* Smaller font size for mobile */
+  }
+  .hamburger-menu {
+    font-size: 1.5rem; /* Reduce menu size for smaller devices */
+  }
+}
+
+.transition-transform {
+  transition: transform 0.3s ease-in-out;
+}
+.translate-x-0 {
+  transform: translateX(0);
+}
+.-translate-x-full {
+  transform: translateX(-100%);
+}

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 exports.authenticate = async (req, res, next) => {
-    const token = req.cookies[process.env.COOKIE_NAME];
+    const token = req.cookies[process.env.COOKIE_NAME] || req.headers.authorization?.split(" ")[1];
     if (!token) return res.status(401).json({ message: 'Access Denied. No token provided.' });
 
     try {
