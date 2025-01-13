@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
   const [tzId, setTzId] = useState(""); // State for Teckzite ID
   const [password, setPassword] = useState(""); // State for password
+  const [showButton, setShowButton] = useState(true); // State to manage button visibility
   const navigate = useNavigate();
 
   // Handles input changes
@@ -16,6 +17,7 @@ const Login = () => {
     } else if (name === "password") {
       setPassword(value);
     }
+    setShowButton(true); // Show button on input change
   };
 
   // Handles form submission
@@ -24,14 +26,15 @@ const Login = () => {
 
     if (!tzId) {
       toast.error("Please enter your Teckzite ID.", { position: "top-center" });
+      setShowButton(false);
       return;
     }
     if (!password) {
       toast.error("Please enter your password.", { position: "top-center" });
+      setShowButton(false);
       return;
     }
     if (
-      tzId.length !== 8 ||
       !tzId.toUpperCase().startsWith("TZ25V") ||
       isNaN(tzId.slice(5))
     ) {
@@ -39,6 +42,7 @@ const Login = () => {
         "Teckzite ID must start with 'TZ25V' followed by a number and have a total length of 8 characters.",
         { position: "top-center" }
       );
+      setShowButton(false);
       return;
     }
 
@@ -55,15 +59,20 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
+        localStorage.setItem("userRole", data.role); // Assuming the role is sent in the response
+        localStorage.setItem("isAuthenticated", "true");
+
         toast.success(data.message, { position: "top-center" });
-        navigate("/dashboard"); // Navigate to dashboard after successful login
+        navigate("/dashboard");// Navigate to dashboard after successful login
       } else {
         toast.error(data.message, { position: "top-center" });
+        setShowButton(false);
       }
     } catch (error) {
       toast.error("An error occurred while logging in. Please try again.", {
         position: "top-center",
       });
+      setShowButton(false);
     }
   };
 
@@ -94,13 +103,15 @@ const Login = () => {
             className="w-full px-4 py-2 mb-4 text-black rounded-lg outline-none focus:ring-2 focus:ring-gray-400"
             style={{ fontFamily: "Poppins, sans-serif" }}
           />
-          <button
-            type="submit"
-            className="w-full px-4 py-2 bg-[#5f5f60d2] text-white font-semibold rounded-lg hover:bg-[#292929]"
-            style={{ fontFamily: "Poppins, sans-serif" }}
-          >
-            Login
-          </button>
+          {showButton && (
+            <button
+              type="submit"
+              className="w-full px-4 py-2 bg-[#5f5f60d2] text-white font-semibold rounded-lg hover:bg-[#292929]"
+              style={{ fontFamily: "Poppins, sans-serif" }}
+            >
+              Login
+            </button>
+          )}
         </form>
       </div>
     </div>

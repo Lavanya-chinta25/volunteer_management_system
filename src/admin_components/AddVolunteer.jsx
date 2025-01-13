@@ -167,7 +167,7 @@ const AddVolunteer = () => {
             </option>
             <option value="Admin">Admin</option>
             <option value="Volunteer">Volunteer</option>
-            <option value="Core Team">Core Team</option>
+            <option value="Coordinator">Core Team</option>
           </select>
         </div>
 

@@ -6,7 +6,7 @@ import GenerateIDCards from "../admin_components/GenerateIDCards";
 import ViewVolunteers from "../admin_components/ViewVolunteers";
 import ViewProfile from "../admin_components/ViewProfile";
 import AddStalls from "../admin_components/AddStalls";
-import Sidebar from "./Sidebar"; // Import Sidebar component
+import Sidebar from "./admin_sidebar"; // Import Sidebar component
 
 const Dashboard = () => {
   const [role, setRole] = useState("");
