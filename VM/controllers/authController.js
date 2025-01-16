@@ -49,6 +49,7 @@ exports.addUser = async (req, res) => {
 
         await user.save();
         console.log("saved");
+        console.log(password);
 
         res.status(201).json({
             message: 'User added successfully',

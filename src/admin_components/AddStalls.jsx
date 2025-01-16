@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import axios from "axios";
 import { toast } from "react-toastify";
 
 const AddStalls = () => {
@@ -10,6 +11,7 @@ const AddStalls = () => {
 
   const fileInputRef = useRef(null); // Ref for the file input
 
+  // Position validation pattern
   const positionPattern =
     /^(ab[1-3])(?:\s*(g[1-9]|g10|f[1-9]|f10|s[1-9]|s10|t[1-9]|t10))+$/;
 
@@ -22,9 +24,10 @@ const AddStalls = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     window.scrollTo({ top: 0, behavior: "smooth" });
+
     const { stallName, stallImage, stallPosition } = formData;
 
     if (!stallName || !stallImage || !stallPosition) {
@@ -39,17 +42,41 @@ const AddStalls = () => {
       return;
     }
 
-    toast.success("Stall added successfully!");
+    // Prepare form data for the request
+    const formDataPayload = new FormData();
+    formDataPayload.append("name", stallName);
+    formDataPayload.append("image", stallImage);
+    formDataPayload.append("position", stallPosition);
 
-    // Reset form and clear file input
-    setFormData({
-      stallName: "",
-      stallImage: null,
-      stallPosition: "",
-    });
+    try {
+      // Send POST request to backend
+      const response = await axios.post(
+        "http://localhost:5000/api/stalls", // Backend endpoint
+        formDataPayload,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true, // Include cookies for authentication
+        }
+      );
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // Clear the file input value
+      toast.success("Stall added successfully!");
+      console.log("Response:", response.data);
+
+      // Reset form and clear file input
+      setFormData({
+        stallName: "",
+        stallImage: null,
+        stallPosition: "",
+      });
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""; // Clear the file input value
+      }
+    } catch (error) {
+      console.error("Error adding stall:", error.response || error);
+      toast.error("Failed to add stall. Please try again.");
     }
   };
 
