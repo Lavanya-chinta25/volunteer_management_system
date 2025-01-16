@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,6 +8,14 @@ const Login = () => {
   const [password, setPassword] = useState(""); // State for password
   const [showButton, setShowButton] = useState(true); // State to manage button visibility
   const navigate = useNavigate();
+
+  // Check if the user is already authenticated (on page load or refresh)
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
+    if (isAuthenticated === "true") {
+      navigate("/dashboard"); // If already authenticated, navigate to dashboard
+    }
+  }, [navigate]);
 
   // Handles input changes
   const handleInputChange = (e) => {
@@ -60,10 +68,10 @@ const Login = () => {
 
       if (response.ok) {
         localStorage.setItem("userRole", data.role); // Assuming the role is sent in the response
-        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("isAuthenticated", "true"); // Persist authentication state
 
         toast.success(data.message, { position: "top-center" });
-        navigate("/dashboard");// Navigate to dashboard after successful login
+        navigate("/dashboard"); // Navigate to dashboard after successful login
       } else {
         toast.error(data.message, { position: "top-center" });
         setShowButton(false);

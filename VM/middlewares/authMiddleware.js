@@ -2,8 +2,13 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 exports.authenticate = async (req, res, next) => {
+    
     const token = req.cookies[process.env.COOKIE_NAME] || req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(401).json({ message: 'Access Denied. No token provided.' });
+    console.log(token);
+    console.log("t2");
+    if (!token) {
+        console.log(token);
+        return res.status(401).json({ message: 'Access Denied. No token provided.' });}
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -16,6 +21,7 @@ exports.authenticate = async (req, res, next) => {
 };
 
 exports.isAuthorized = (req, res, next) => {
+    console.log("authorized");
     if (req.user.role !== 'Admin' && req.user.role !== 'Coordinator') {
         return res.status(403).json({ message: 'Access Denied. Admins or Coordinators only.' });
     }

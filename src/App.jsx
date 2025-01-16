@@ -11,17 +11,19 @@ function App() {
   const [role, setRole] = useState(null); // State to store the user's role
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track if the user is authenticated
 
-  // Simulate fetching user role from an API or local storage
+  // Simulate fetching user role from localStorage or API
   useEffect(() => {
     const fetchUserRole = async () => {
-      // Replace this with actual API call or localStorage/sessionStorage logic
-      const storedRole = localStorage.getItem("userRole"); // Example: "Admin" or "Coordinator"
-      console.log(storedRole)
-      const isLoggedIn = localStorage.getItem("isAuthenticated"); // Example: "true"
-      
+      // Fetch user role and authentication status from localStorage
+      const storedRole = localStorage.getItem("userRole");
+      const isLoggedIn = localStorage.getItem("isAuthenticated");
+
+      // Check if the user is authenticated and role exists
       if (storedRole && isLoggedIn === "true") {
         setRole(storedRole);
         setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
       }
     };
 
@@ -45,7 +47,9 @@ function App() {
         <Background />
         <div className="absolute inset-0 z-10 flex justify-center items-center">
           <Routes>
+            {/* Login route */}
             <Route path="/" element={<Login />} />
+            {/* Protected Dashboard route */}
             <Route
               path="/dashboard"
               element={isAuthenticated ? renderDashboard() : <Navigate to="/" />}
@@ -59,7 +63,6 @@ function App() {
           closeOnClick
           pauseOnHover
           draggable
-          progress={undefined}
         />
       </div>
     </Router>
