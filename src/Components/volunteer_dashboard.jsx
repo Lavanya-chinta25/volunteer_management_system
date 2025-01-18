@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AddVolunteer from "../admin_components/AddVolunteer";
+import UploadPhoto from '../volunteer_components/UploadPhoto'
 import GenerateIDCards from "../admin_components/GenerateIDCards";
 import ViewVolunteers from "../admin_components/ViewVolunteers";
 import ViewProfile from "../admin_components/ViewProfile";
@@ -10,7 +10,7 @@ import Sidebar from "./volunteer_sidebar"; // Import Sidebar component
 
 const Dashboard = () => {
   const [role, setRole] = useState("");
-  const [activeComponent, setActiveComponent] = useState("Add Volunteer");
+  const [activeComponent, setActiveComponent] = useState("Upload Photo");
   const [showSidebar, setShowSidebar] = useState(false); // State for sidebar visibility
 
   useEffect(() => {
@@ -22,8 +22,8 @@ const Dashboard = () => {
 
   const renderComponent = () => {
     switch (activeComponent) {
-      case "Add Volunteer":
-        return <AddVolunteer />;
+      case "Upload Photo":
+        return <UploadPhoto/>;
       case "Generate ID Cards":
         return <GenerateIDCards />;
       case "View Volunteers":
@@ -51,7 +51,7 @@ const Dashboard = () => {
           ✖
         </button>
         <ul className="space-y-4">
-          {["Add Volunteer", "Generate ID Cards", "View Volunteers", "View Profile", "Add Stalls"].map(
+          {["Upload Photo", "Generate ID Cards", "View Volunteers", "View Profile", "Add Stalls"].map(
             (item) => (
               <li
                 key={item}

@@ -105,9 +105,9 @@ exports.uploadPhoto = async (req, res) => {
             { photo: req.file.path },
             { new: true }
         );
-
+        
         if (!user) return res.status(404).json({ message: 'User not found' });
-
+        console.log(user.photo)
         res.status(200).json({ message: 'Photo uploaded successfully', photo: user.photo });
     } catch (error) {
         res.status(500).json({ message: 'Server error now' });

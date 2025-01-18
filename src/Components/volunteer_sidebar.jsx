@@ -2,7 +2,7 @@ import React from "react";
 
 const Sidebar = ({ activeComponent, setActiveComponent, setShowSidebar }) => {
   const menuItems = [
-    { name: "Upload photo" },
+    { name: "Upload Photo" },
     { name: "Generate ID Cards" },
     { name: "Add Stalls" },
     { name: "View Volunteers" },
