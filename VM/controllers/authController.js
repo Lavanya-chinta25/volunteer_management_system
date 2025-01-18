@@ -49,6 +49,7 @@ exports.addUser = async (req, res) => {
 
         await user.save();
         console.log("saved");
+        console.log(password);
 
         res.status(201).json({
             message: 'User added successfully',
@@ -113,4 +114,23 @@ exports.uploadPhoto = async (req, res) => {
         res.status(500).json({ message: 'Server error now' });
     }
 };
+exports.viewVolunteers = async (req, res) => {
+    try {
+        // Fetch all users with the role of 'Volunteer'
+        const volunteers = await User.find({ role: 'Volunteer' }).select('-password'); // Exclude passwords from response
+
+        if (volunteers.length === 0) {
+            return res.status(404).json({ message: 'No volunteers found' });
+        }
+
+        res.status(200).json({
+            message: 'Volunteers retrieved successfully',
+            count: volunteers.length,
+            volunteers,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 //password added
