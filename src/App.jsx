@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Background from "./Components/background";
 import Login from "./Components/login";
-import AdminDashboard from "./Components/admin_dashboard";
-import VolunteerDashboard from "./Components/volunteer_dashboard";
+import Dashboard from "./Components/dashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const [role, setRole] = useState(localStorage.getItem("userRole") || null); // Initial role from localStorage
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem("isAuthenticated") === "true"
   ); // Initial authentication status
@@ -16,10 +14,7 @@ function App() {
   // Update state whenever localStorage changes
   useEffect(() => {
     const handleStorageChange = () => {
-      const storedRole = localStorage.getItem("userRole");
       const isLoggedIn = localStorage.getItem("isAuthenticated") === "true";
-
-      setRole(storedRole);
       setIsAuthenticated(isLoggedIn);
     };
 
@@ -32,17 +27,6 @@ function App() {
     };
   }, []);
 
-  // Render the appropriate dashboard based on role
-  const renderDashboard = () => {
-    if (role === "Admin" || role === "Coordinator") {
-      return <AdminDashboard />;
-    } else if (role === "Volunteer") {
-      return <VolunteerDashboard />;
-    } else {
-      return <Navigate to="/" />;
-    }
-  };
-
   return (
     <Router>
       <div className="relative h-screen w-screen">
@@ -52,7 +36,7 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route
               path="/dashboard"
-              element={isAuthenticated ? renderDashboard() : <Navigate to="/" />}
+              element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
             />
           </Routes>
         </div>

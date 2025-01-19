@@ -22,7 +22,7 @@ exports.authenticate = async (req, res, next) => {
 
 exports.isAuthorized = (req, res, next) => {
     console.log("authorized");
-    if (req.user.role !== 'Admin' && req.user.role !== 'Coordinator') {
+    if (req.user.role !== 'Admin' && req.user.role !== 'Core Team') {
         return res.status(403).json({ message: 'Access Denied. Admins or Coordinators only.' });
     }
     next();

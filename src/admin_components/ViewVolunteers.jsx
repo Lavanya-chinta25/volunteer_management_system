@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaUsers, FaSchool, FaPhoneAlt, FaStar, FaIdBadge } from "react-icons/fa";
+import {
+  FaUsers,
+  FaSchool,
+  FaPhoneAlt,
+  FaStar,
+  FaIdBadge,
+} from "react-icons/fa";
 
 const ViewVolunteers = () => {
   const [volunteers, setVolunteers] = useState([]);
@@ -8,7 +14,9 @@ const ViewVolunteers = () => {
   useEffect(() => {
     // Fetch volunteers data from the backend API
     axios
-      .get("http://localhost:5000/api/auth/volunteers", { withCredentials: true })
+      .get("http://localhost:5000/api/auth/volunteers", {
+        withCredentials: true,
+      })
       .then((response) => {
         setVolunteers(response.data.volunteers);
       })
@@ -18,56 +26,48 @@ const ViewVolunteers = () => {
   }, []);
 
   return (
-    <div className="p-8 bg-gradient-to-b from-gray-900 to-gray-800 min-h-screen">
-      <h2 className="text-4xl font-extrabold text-white mb-8 tracking-tight">View Volunteers</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="p-4 bg-gradient-to-b from-gray-900 to-gray-800 min-h-screen">
+      <h2 className="text-3xl font-extrabold text-white mb-6 tracking-tight text-center">
+        View Volunteers
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {volunteers.map((volunteer) => (
           <div
             key={volunteer._id}
-            className="bg-gradient-to-r from-teal-500 to-blue-600 shadow-2xl rounded-xl overflow-hidden transform hover:scale-105 transition duration-300 ease-in-out"
+            className="bg-gradient-to-r from-teal-500 to-blue-600 shadow-xl rounded-lg overflow-hidden transition-transform transform hover:scale-105 duration-300 ease-in-out"
           >
-            <div className="w-full h-48 overflow-hidden rounded-t-xl">
+            {/* Image Section */}
+            <div className="w-full h-40 sm:h-48 overflow-hidden bg-gray-700 flex items-center justify-center">
               <img
                 src={volunteer.photo || "/placeholder.jpg"}
                 alt={`${volunteer.name}'s Photo`}
-                className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-all"
+                className="max-w-full max-h-full object-contain"
               />
             </div>
-            <div className="p-6 text-center text-white">
-              <h3 className="text-2xl font-semibold text-gray-100 mb-2">{volunteer.name}</h3>
+            {/* Details Section */}
+            <div className="p-4 text-center text-white">
+              <h3 className="text-xl font-semibold mb-2">{volunteer.name}</h3>
               <p className="text-xs text-gray-300 mb-4">{volunteer.tzId}</p>
-            </div>
-            <div className="px-6 py-4 bg-gray-900 rounded-b-xl">
-              <div className="grid grid-cols-1 gap-4">
-                {/* Branch */}
-                <div className="flex items-center text-gray-200">
-                  <FaIdBadge className="mr-3 text-lg" />
-                  <div className="font-medium text-sm text-gray-300">Branch:</div>
-                  <div className="ml-2 text-sm text-gray-100">{volunteer.branch}</div>
+              <div className="text-sm text-gray-200 space-y-2">
+                <div className="flex items-center justify-center">
+                  <FaIdBadge className="mr-2" />
+                  <span>{volunteer.branch}</span>
                 </div>
-                {/* Year */}
-                <div className="flex items-center text-gray-200">
-                  <FaSchool className="mr-3 text-lg" />
-                  <div className="font-medium text-sm text-gray-300">Year:</div>
-                  <div className="ml-2 text-sm text-gray-100">{volunteer.year}</div>
+                <div className="flex items-center justify-center">
+                  <FaSchool className="mr-2" />
+                  <span>{volunteer.year}</span>
                 </div>
-                {/* Club */}
-                <div className="flex items-center text-gray-200">
-                  <FaUsers className="mr-3 text-lg" />
-                  <div className="font-medium text-sm text-gray-300">Club:</div>
-                  <div className="ml-2 text-sm text-gray-100">{volunteer.club}</div>
+                <div className="flex items-center justify-center">
+                  <FaUsers className="mr-2" />
+                  <span>{volunteer.club}</span>
                 </div>
-                {/* Phone */}
-                <div className="flex items-center text-gray-200">
-                  <FaPhoneAlt className="mr-3 text-lg" />
-                  <div className="font-medium text-sm text-gray-300">Phone:</div>
-                  <div className="ml-2 text-sm text-gray-100">{volunteer.phone}</div>
+                <div className="flex items-center justify-center">
+                  <FaPhoneAlt className="mr-2" />
+                  <span>{volunteer.phone}</span>
                 </div>
-                {/* Credit Score */}
-                <div className="flex items-center text-gray-200">
-                  <FaStar className="mr-3 text-lg" />
-                  <div className="font-medium text-sm text-gray-300">Credit Score:</div>
-                  <div className="ml-2 text-sm text-gray-100">{volunteer.creditScore}</div>
+                <div className="flex items-center justify-center">
+                  <FaStar className="mr-2" />
+                  <span>{volunteer.creditScore}</span>
                 </div>
               </div>
             </div>

@@ -6,19 +6,42 @@ import GenerateIDCards from "../admin_components/GenerateIDCards";
 import ViewVolunteers from "../admin_components/ViewVolunteers";
 import ViewProfile from "../admin_components/ViewProfile";
 import AddStalls from "../admin_components/AddStalls";
-import Sidebar from "./Sidebar"; // Import Sidebar component
 
 const Dashboard = () => {
   const [role, setRole] = useState("");
-  const [activeComponent, setActiveComponent] = useState("Add Volunteer");
-  const [showSidebar, setShowSidebar] = useState(false); // State for sidebar visibility
+  const [activeComponent, setActiveComponent] = useState("View Profile");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const storedRole = localStorage.getItem("role");
+    const storedRole = localStorage.getItem("userRole"); // Fetch role from local storage
     if (storedRole) {
       setRole(storedRole);
     }
   }, []);
+
+  const adminOptions = [
+    "Add Volunteer",
+    "Generate ID Cards",
+    "View Volunteers",
+    "View Profile",
+    "Add Stalls",
+  ];
+
+  const coreTeamOptions = [
+    "Add Volunteer",
+    "View Volunteers",
+    "View Profile",
+    "Add Stalls",
+  ];
+
+  const volunteerOptions = ["View Profile", "Add Stalls"];
+
+  const availableOptions =
+    role === "Admin"
+      ? adminOptions
+      : role === "Core Team"
+      ? coreTeamOptions
+      : volunteerOptions;
 
   const renderComponent = () => {
     switch (activeComponent) {
@@ -37,43 +60,15 @@ const Dashboard = () => {
     }
   };
 
-  // Overlay sidebar for smaller devices
-  const mobileSidebar = (
-    <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex">
-      <div
-        className="bg-white/10 backdrop-blur-lg w-3/4 h-full p-6 flex flex-col rounded-xl space-y-4"
-        style={{ backdropFilter: "blur(10px)", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)" }}
-      >
-        <button
-          className="text-white text-2xl mb-4 self-end"
-          onClick={() => setShowSidebar(false)}
-        >
-          ✖
-        </button>
-        <ul className="space-y-4">
-          {["Add Volunteer", "Generate ID Cards", "View Volunteers", "View Profile", "Add Stalls"].map(
-            (item) => (
-              <li
-                key={item}
-                className={`cursor-pointer p-4 rounded-lg text-white font-semibold transition-all duration-300 ease-in-out
-                  ${activeComponent === item ? "shadow-lg shadow-blue-400" : "hover:bg-gray-800 hover:bg-opacity-50"}`}
-                onClick={() => {
-                  setActiveComponent(item);
-                  setShowSidebar(false);
-                }}
-              >
-                {item}
-              </li>
-            )
-          )}
-        </ul>
-      </div>
-    </div>
-  );
+  const roleSpecificText =
+    role === "Admin"
+      ? "Admin Options"
+      : role === "Core Team"
+      ? "Core Team Options"
+      : "Volunteer Options";
 
   return (
     <div className="h-screen flex flex-col space-y-4 p-4">
-      {/* ToastContainer at the top level */}
       <ToastContainer
         position="top-center"
         autoClose={3000}
@@ -83,16 +78,30 @@ const Dashboard = () => {
         draggable
       />
 
-      <div className="w-full py-4 shadow-md relative flex items-center justify-center">
-        <button
-          className="hamburger-menu absolute left-4 top-1/2 transform -translate-y-1/2 text-white lg:hidden"
-          onClick={() => setShowSidebar(true)}
-        >
-          ☰
-        </button>
+      {/* Header */}
+      <div className="w-full py-4 shadow-md relative flex items-center justify-between lg:justify-center">
         <h1 className="title font-bold text-3xl text-white">
           VOLUNTEER MANAGEMENT SYSTEM
         </h1>
+        <button
+          className="lg:hidden text-white p-2 focus:outline-none"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16m-7 6h7"
+            />
+          </svg>
+        </button>
       </div>
 
       <hr
@@ -106,27 +115,54 @@ const Dashboard = () => {
       <div
         className="flex flex-col lg:flex-row"
         style={{
-          width: `calc(100vw - 2cm)`,
-          height: `calc(100vh - 2cm - 6rem)`,
+          width: "calc(100vw - 2cm)",
+          height: "calc(100vh - 2cm - 6rem)",
         }}
       >
-        {/* Sidebar for larger screens */}
-        <Sidebar
-          activeComponent={activeComponent}
-          setActiveComponent={setActiveComponent}
-          setShowSidebar={setShowSidebar}
-        />
-
-        {/* Overlay Sidebar for smaller devices */}
-        {showSidebar && mobileSidebar}
+        {/* Sidebar */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          ></div>
+        )}
+        <div
+          className={`bg-white/10 backdrop-blur-lg p-6 flex flex-col rounded-xl shadow-lg transform lg:transform-none ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300 ease-in-out lg:w-1/5 w-full lg:block fixed lg:static z-20`}
+        >
+          <div className="text-center text-white font-semibold text-lg mb-4">
+            {roleSpecificText}
+          </div>
+          <ul className="space-y-4">
+            {availableOptions.map((item) => (
+              <li
+                key={item}
+                className={`cursor-pointer p-4 rounded-lg text-white font-semibold transition-all duration-300 ease-in-out ${
+                  activeComponent === item
+                    ? "shadow-lg shadow-blue-400"
+                    : "hover:bg-gray-800 hover:bg-opacity-50"
+                }`}
+                onClick={() => {
+                  setActiveComponent(item);
+                  setIsSidebarOpen(false); // Close sidebar after selection
+                }}
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+          <div className="text-center text-white font-light text-sm mt-4">
+            End of Options
+          </div>
+        </div>
 
         {/* Main Content */}
         <div
           className="bg-white/15 backdrop-blur-md shadow-lg rounded-lg flex-1"
           style={{
-            height: `100%`,
+            height: "100%",
             margin: "0.5cm",
-            marginBottom: "0cm",
             padding: "1cm",
             boxSizing: "border-box",
             overflowY: "scroll",

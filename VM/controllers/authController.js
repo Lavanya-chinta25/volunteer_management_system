@@ -24,7 +24,8 @@ exports.addUser = async (req, res) => {
     try {
         const tzId = `TZ25V${Date.now() % 100000}`; // Timestamp-based ID to ensure uniqueness
         // Generate unique tzId
-        const password = generatePassword(); // Generate a password
+        const password = generatePassword(); 
+        console.log(password);// Generate a password
         const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
 
         // Extract numeric part from year (e.g., "E2" -> 2)
@@ -45,11 +46,11 @@ exports.addUser = async (req, res) => {
             role,
         });
         
-        console.log("created");
+        
 
         await user.save();
-        console.log("saved");
-        console.log(password);
+        // c  // console.log(password);onsole.log("saved");
+      
 
         res.status(201).json({
             message: 'User added successfully',

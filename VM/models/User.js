@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     year: { type: Number, required: true },
     phone: { type: String, required: true },
     club: { type: String, required: true },
-    role: { type: String, enum: ['Volunteer', 'Coordinator', 'Admin'], required: true },
+    role: { type: String, enum: ['Volunteer', 'Core Team', 'Admin'], required: true },
     photo: { type: String ,default:''},
     creditScore: { type: Number, default: 0 },
 });
