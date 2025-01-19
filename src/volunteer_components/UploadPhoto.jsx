@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const AddVolunteer = () => {
+const Uploadphoto = () => {
   const [photo, setPhoto] = useState(null);
 
   const handlePhotoChange = (e) => {
@@ -74,4 +74,4 @@ const AddVolunteer = () => {
   );
 };
 
-export default AddVolunteer;
+export default Uploadphoto;
