@@ -6,6 +6,7 @@ import GenerateIDCards from "../admin_components/GenerateIDCards";
 import ViewVolunteers from "../admin_components/ViewVolunteers";
 import ViewProfile from "../admin_components/ViewProfile";
 import AddStalls from "../admin_components/AddStalls";
+import ViewStalls from "../admin_components/ViewStalls";
 
 const Dashboard = () => {
   const [role, setRole] = useState("");
@@ -25,6 +26,7 @@ const Dashboard = () => {
     "View Volunteers",
     "View Profile",
     "Add Stalls",
+    "View Stalls"
   ];
 
   const coreTeamOptions = [
@@ -32,9 +34,10 @@ const Dashboard = () => {
     "View Volunteers",
     "View Profile",
     "Add Stalls",
+    "View Stalls"
   ];
 
-  const volunteerOptions = ["View Profile", "Add Stalls"];
+  const volunteerOptions = ["View Profile", "Add Stalls","View Stalls"];
 
   const availableOptions =
     role === "Admin"
@@ -55,6 +58,8 @@ const Dashboard = () => {
         return <ViewProfile />;
       case "Add Stalls":
         return <AddStalls />;
+      case "View Stalls":
+        return <ViewStalls/>
       default:
         return <div>Welcome to your Dashboard!</div>;
     }
@@ -127,18 +132,18 @@ const Dashboard = () => {
           ></div>
         )}
         <div
-          className={`bg-white/10 backdrop-blur-lg p-6 flex flex-col rounded-xl shadow-lg transform lg:transform-none ${
+          className={`bg-white/10 backdrop-blur-lg mt-9 p-6 flex flex-col rounded-xl shadow-lg transform lg:transform-none ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           } transition-transform duration-300 ease-in-out lg:w-1/5 w-full lg:block fixed lg:static z-20`}
         >
-          <div className="text-center text-white font-semibold text-lg mb-4">
+          {/*<div className="text-center text-white font-semibold text-lg mb-4">
             {roleSpecificText}
-          </div>
-          <ul className="space-y-4">
+          </div> */}
+          <ul className="space-y-2">
             {availableOptions.map((item) => (
               <li
                 key={item}
-                className={`cursor-pointer p-4 rounded-lg text-white font-semibold transition-all duration-300 ease-in-out ${
+                className={`cursor-pointer px-4 py-3 rounded-lg text-white font-semibold transition-all duration-300 ease-in-out ${
                   activeComponent === item
                     ? "shadow-lg shadow-blue-400"
                     : "hover:bg-gray-800 hover:bg-opacity-50"
@@ -152,9 +157,10 @@ const Dashboard = () => {
               </li>
             ))}
           </ul>
+          {/* 
           <div className="text-center text-white font-light text-sm mt-4">
             End of Options
-          </div>
+          </div>*/}
         </div>
 
         {/* Main Content */}
