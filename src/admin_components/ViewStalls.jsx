@@ -12,7 +12,8 @@ const ViewStalls = () => {
   const [imageFile, setImageFile] = useState(null); // Store the selected image file
 
   // Fetch stalls from the API
-  useEffect(() => {
+  const fetchStalls = () => {
+    setLoading(true);
     axios
       .get("http://localhost:5000/api/stalls", { withCredentials: true })
       .then((response) => {
@@ -24,6 +25,10 @@ const ViewStalls = () => {
         toast.error("Failed to fetch stalls data.");
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchStalls();
   }, []);
 
   const handleUpdateClick = (stall) => {
@@ -62,15 +67,9 @@ const ViewStalls = () => {
       })
       .then(() => {
         toast.success("Stall updated successfully!");
-        setStalls((prev) =>
-          prev.map((stall) =>
-            stall._id === selectedStall._id
-              ? { ...stall, ...updateData, image: imagePreview }
-              : stall
-          )
-        );
         setSelectedStall(null); // Close modal
         setImageFile(null); // Reset image file
+        fetchStalls(); // Refetch stalls from the backend
       })
       .catch((error) => {
         console.error("Error updating stall:", error);
@@ -112,7 +111,7 @@ const ViewStalls = () => {
               />
             </div>
             <div className="p-4 text-white">
-            <h3 className="text-lg font-semibold">{stall.name.toUpperCase()}</h3>
+              <h3 className="text-lg font-semibold">{stall.name.toUpperCase()}</h3>
               <p className="text-sm">Position: {stall.position}</p>
               <div className="flex justify-between mt-4">
                 <button
@@ -138,10 +137,14 @@ const ViewStalls = () => {
       {/* Update Modal */}
       {selectedStall && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-black rounded-lg p-6 w-full max-w-md overflow-auto h-auto max-h-[80vh]" 
-          style={{overflowY: "scroll",
-            scrollbarWidth: "none",
-            msOverflowStyle: "none"}}>
+          <div
+            className="bg-black rounded-lg p-6 w-full max-w-md overflow-auto h-auto max-h-[80vh]"
+            style={{
+              overflowY: "scroll",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
+          >
             <h3 className="text-lg font-bold mb-4">Update Stall</h3>
             <label className="block mb-2">
               Name:

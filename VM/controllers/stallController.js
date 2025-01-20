@@ -50,12 +50,29 @@ exports.getStalls = async (req, res) => {
 // Update stall
 exports.updateStall = async (req, res) => {
     try {
-        const stall = await Stall.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.status(200).json(stall);
+        upload.single('image')(req, res, async (err) => {
+            if (err) {
+                return res.status(400).json({ message: 'Error uploading image', error: err });
+            }
+
+            const updateData = { ...req.body };
+            if (req.file) {
+                updateData.image = req.file.path; // Update the image URL from Cloudinary
+            }
+
+            const stall = await Stall.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
+            if (!stall) {
+                return res.status(404).json({ message: 'Stall not found' });
+            }
+
+            res.status(200).json(stall);
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error', error });
     }
 };
+
 
 // Delete stall
 exports.deleteStall = async (req, res) => {

@@ -14,7 +14,7 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const storedRole = localStorage.getItem("userRole"); // Fetch role from local storage
+    const storedRole = localStorage.getItem("userRole");
     if (storedRole) {
       setRole(storedRole);
     }
@@ -26,7 +26,7 @@ const Dashboard = () => {
     "View Volunteers",
     "Add Stalls",
     "View Stalls",
-    "Upload Photo"
+    "Upload Photo",
   ];
 
   const coreTeamOptions = [
@@ -34,10 +34,10 @@ const Dashboard = () => {
     "View Volunteers",
     "Upload Photo",
     "Add Stalls",
-    "View Stalls"
+    "View Stalls",
   ];
 
-  const volunteerOptions = ["Upload Photo", "Add Stalls","View Stalls"];
+  const volunteerOptions = ["Upload Photo", "Add Stalls", "View Stalls"];
 
   const availableOptions =
     role === "Admin"
@@ -57,20 +57,39 @@ const Dashboard = () => {
       case "Add Stalls":
         return <AddStalls />;
       case "View Stalls":
-        return <ViewStalls/>
+        return <ViewStalls />;
       case "Upload Photo":
-        return <UploadPhoto/>
+        return <UploadPhoto />;
       default:
-        return <div>Welcome to your Dashboard!</div>;
+        return (
+          <div className="flex flex-col items-center justify-center h-full text-center text-white">
+            <img
+              src="/logo.png" // Replace with your actual logo path
+              alt="Dashboard Logo"
+              className="w-32 h-32 mb-4"
+            />
+            <h1 className="text-4xl font-bold mb-2">Welcome to Your Dashboard</h1>
+            <p className="text-lg mb-6">
+              Manage volunteers, stalls, and more with ease!
+            </p>
+            <div className="flex space-x-4">
+              <button
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+                onClick={() => setActiveComponent(availableOptions[0])}
+              >
+                Get Started
+              </button>
+              <button
+                className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+                onClick={() => setIsSidebarOpen(true)}
+              >
+                Explore Options
+              </button>
+            </div>
+          </div>
+        );
     }
   };
-
-  const roleSpecificText =
-    role === "Admin"
-      ? "Admin Options"
-      : role === "Core Team"
-      ? "Core Team Options"
-      : "Volunteer Options";
 
   return (
     <div className="h-screen flex flex-col space-y-4 p-4">
@@ -136,9 +155,6 @@ const Dashboard = () => {
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           } transition-transform duration-300 ease-in-out lg:w-1/5 w-full lg:block fixed lg:static z-20`}
         >
-          {/*<div className="text-center text-white font-semibold text-lg mb-4">
-            {roleSpecificText}
-          </div> */}
           <ul className="space-y-2">
             {availableOptions.map((item) => (
               <li
@@ -157,10 +173,6 @@ const Dashboard = () => {
               </li>
             ))}
           </ul>
-          {/* 
-          <div className="text-center text-white font-light text-sm mt-4">
-            End of Options
-          </div>*/}
         </div>
 
         {/* Main Content */}
