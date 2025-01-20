@@ -4,9 +4,9 @@ import "react-toastify/dist/ReactToastify.css";
 import AddVolunteer from "../admin_components/AddVolunteer";
 import GenerateIDCards from "../admin_components/GenerateIDCards";
 import ViewVolunteers from "../admin_components/ViewVolunteers";
-import ViewProfile from "../admin_components/ViewProfile";
 import AddStalls from "../admin_components/AddStalls";
 import ViewStalls from "../admin_components/ViewStalls";
+import UploadPhoto from "../admin_components/UploadPhoto";
 
 const Dashboard = () => {
   const [role, setRole] = useState("");
@@ -24,20 +24,20 @@ const Dashboard = () => {
     "Add Volunteer",
     "Generate ID Cards",
     "View Volunteers",
-    "View Profile",
     "Add Stalls",
-    "View Stalls"
+    "View Stalls",
+    "Upload Photo"
   ];
 
   const coreTeamOptions = [
     "Add Volunteer",
     "View Volunteers",
-    "View Profile",
+    "Upload Photo",
     "Add Stalls",
     "View Stalls"
   ];
 
-  const volunteerOptions = ["View Profile", "Add Stalls","View Stalls"];
+  const volunteerOptions = ["Upload Photo", "Add Stalls","View Stalls"];
 
   const availableOptions =
     role === "Admin"
@@ -54,12 +54,12 @@ const Dashboard = () => {
         return <GenerateIDCards />;
       case "View Volunteers":
         return <ViewVolunteers />;
-      case "View Profile":
-        return <ViewProfile />;
       case "Add Stalls":
         return <AddStalls />;
       case "View Stalls":
         return <ViewStalls/>
+      case "Upload Photo":
+        return <UploadPhoto/>
       default:
         return <div>Welcome to your Dashboard!</div>;
     }
