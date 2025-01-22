@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import AddVolunteer from "../admin_components/AddVolunteer";
 import GenerateIDCards from "../admin_components/GenerateIDCards";
@@ -7,11 +8,13 @@ import ViewVolunteers from "../admin_components/ViewVolunteers";
 import AddStalls from "../admin_components/AddStalls";
 import ViewStalls from "../admin_components/ViewStalls";
 import UploadPhoto from "../admin_components/UploadPhoto";
+import GiveCredits from "../volunteer_components/GiveCredits";
 
 const Dashboard = () => {
   const [role, setRole] = useState("");
   const [activeComponent, setActiveComponent] = useState("View Profile");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedRole = localStorage.getItem("userRole");
@@ -37,14 +40,42 @@ const Dashboard = () => {
     "View Stalls",
   ];
 
-  const volunteerOptions = ["Upload Photo", "Add Stalls", "View Stalls"];
+  const volunteerOptions = [
+    "Upload Photo",
+    "Add Stalls",
+    "View Stalls",
+    "Give Credits",
+  ];
 
-  const availableOptions =
-    role === "Admin"
+  const availableOptions = [
+    ...(role === "Admin"
       ? adminOptions
       : role === "Core Team"
       ? coreTeamOptions
-      : volunteerOptions;
+      : volunteerOptions),
+    "Logout",
+  ];
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        localStorage.clear();
+        toast.success("Logged out successfully", { position: "top-center" });
+        navigate("/");
+      } else {
+        toast.error("Failed to log out. Please try again.", {
+          position: "top-center",
+        });
+      }
+    } catch (error) {
+      toast.error("An error occurred during logout.", { position: "top-center" });
+    }
+  };
 
   const renderComponent = () => {
     switch (activeComponent) {
@@ -60,11 +91,16 @@ const Dashboard = () => {
         return <ViewStalls />;
       case "Upload Photo":
         return <UploadPhoto />;
+      case "Give Credits":
+        return <GiveCredits />;
+      case "Logout":
+        handleLogout();
+        return null;
       default:
         return (
           <div className="flex flex-col items-center justify-center h-full text-center text-white">
             <img
-              src="/logo.png" // Replace with your actual logo path
+              src="/logo.png"
               alt="Dashboard Logo"
               className="w-32 h-32 mb-4"
             />
@@ -102,7 +138,6 @@ const Dashboard = () => {
         draggable
       />
 
-      {/* Header */}
       <div className="w-full py-4 shadow-md relative flex items-center justify-between lg:justify-center">
         <h1 className="title font-bold text-3xl text-white">
           VOLUNTEER MANAGEMENT SYSTEM
@@ -143,7 +178,6 @@ const Dashboard = () => {
           height: "calc(100vh - 2cm - 6rem)",
         }}
       >
-        {/* Sidebar */}
         {isSidebarOpen && (
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
@@ -153,7 +187,8 @@ const Dashboard = () => {
         <div
           className={`bg-white/10 backdrop-blur-lg mt-9 p-6 flex flex-col rounded-xl shadow-lg transform lg:transform-none ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } transition-transform duration-300 ease-in-out lg:w-1/5 w-full lg:block fixed lg:static z-20`}
+          } transition-transform duration-300 ease-in-out lg:w-1/5 w-full lg:block fixed lg:static z-20 overflow-y-auto`}
+          style={{ maxHeight: "calc(100vh - 9rem)" }}
         >
           <ul className="space-y-2">
             {availableOptions.map((item) => (
@@ -166,7 +201,12 @@ const Dashboard = () => {
                 }`}
                 onClick={() => {
                   setActiveComponent(item);
-                  setIsSidebarOpen(false); // Close sidebar after selection
+                  setIsSidebarOpen(false);
+                }}
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
               >
                 {item}
@@ -175,7 +215,6 @@ const Dashboard = () => {
           </ul>
         </div>
 
-        {/* Main Content */}
         <div
           className="bg-white/15 backdrop-blur-md shadow-lg rounded-lg flex-1"
           style={{
