@@ -11,6 +11,8 @@ import UploadPhoto from "../admin_components/UploadPhoto";
 import GiveCredits from "../volunteer_components/GiveCredits";
 import AddTeam from "../admin_components/AddTeam";
 import Viewteams from "../admin_components/ViewTeams";
+import Viewsponsors from "../admin_components/ViewSponsors";
+import Addsponsor from "../admin_components/AddSponsors";
 
 const Dashboard = () => {
   const [role, setRole] = useState("");
@@ -33,6 +35,9 @@ const Dashboard = () => {
     "View Stalls",
     "Add Team", // New option for Admin
     "Upload Photo",
+    "View Sponsors",
+    "Add Sponsors",
+    "View Teams",
   ];
   
   
@@ -43,7 +48,7 @@ const Dashboard = () => {
     "Upload Photo",
     "Add Stalls",
     "View Stalls",
-    "View Teams",
+    
   ];
   
 
@@ -104,6 +109,10 @@ const Dashboard = () => {
       return <AddTeam></AddTeam> 
       case "View Teams":
         return <Viewteams></Viewteams> 
+      case "View Sponsors":
+        return <Viewsponsors></Viewsponsors>  
+      case "Add Sponsors":
+        return <Addsponsors></Addsponsors> 
     case "Logout":
       handleLogout();
       return null;
