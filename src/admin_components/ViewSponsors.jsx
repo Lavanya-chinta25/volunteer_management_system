@@ -3,38 +3,40 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-const Viewteams = () => {
-  const [teams, setteams] = useState([]);
+const Viewsponsors = () => {
+  const [sponsors, setsponsors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedteam, setSelectedteam] = useState(null); // For the update modal
+  const [selectedsponsor, setSelectedsponsor] = useState(null); // For the update modal
   const [updateData, setUpdateData] = useState({});
   const [imagePreview, setImagePreview] = useState(""); // Preview the selected image
   const [imageFile, setImageFile] = useState(null); // Store the selected image file
 
-  // Fetch teams from the API
-  const fetchteams = () => {
+  // Fetch sponsors from the API
+  const fetchsponsors = () => {
     setLoading(true);
     axios
-      .get("http://localhost:5000/api/teams", { withCredentials: true })
+      .get("http://localhost:5000/api/sponsors", { withCredentials: true })
       .then((response) => {
-        setteams(response.data);
+        console.log("sponsr get");
+        console.log("view sponser",response);
+        setsponsors(response.data);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching teams:", error);
-        toast.error("Failed to fetch teams data.");
+        console.error("Error fetching sponsors:", error);
+        toast.error("Failed to fetch sponsors data.");
         setLoading(false);
       });
   };
 
   useEffect(() => {
-    fetchteams();
+    fetchsponsors();
   }, []);
 
-  const handleUpdateClick = (team) => {
-    setSelectedteam(team);
-    setUpdateData({ ...team }); // Pre-populate the update form
-    setImagePreview(team.image || "/placeholder.jpg"); // Set initial image preview
+  const handleUpdateClick = (sponsor) => {
+    setSelectedsponsor(sponsor);
+    setUpdateData({ ...sponsor }); // Pre-populate the update form
+    setImagePreview(sponsor.image || "/placeholder.jpg"); // Set initial image preview
   };
 
   const handleInputChange = (e) => {
@@ -53,42 +55,42 @@ const Viewteams = () => {
   const handleUpdate = () => {
     const formData = new FormData();
     formData.append("name", updateData.name);
-    formData.append("position", updateData.position);
+    formData.append("type", updateData.type);
     if (imageFile) {
       formData.append("image", imageFile); // Add image file to the form data
     }
 
     axios
-      .put(`http://localhost:5000/api/teams/${selectedteam._id}`, formData, {
+      .put(`http://localhost:5000/api/sponsors/${selectedsponsor._id}`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
       .then(() => {
-        toast.success("team updated successfully!");
-        setSelectedteam(null); // Close modal
+        toast.success("sponsor updated successfully!");
+        setSelectedsponsor(null); // Close modal
         setImageFile(null); // Reset image file
-        fetchteams(); // Refetch teams from the backend
+        fetchsponsors(); // Refetch sponsors from the backend
       })
       .catch((error) => {
-        console.error("Error updating team:", error);
-        toast.error("Failed to update the team.");
+        console.error("Error updating sponsor:", error);
+        toast.error("Failed to update the sponsor.");
       });
   };
 
-  const handleDelete = (teamId) => {
+  const handleDelete = (sponsorId) => {
     axios
-      .delete(`http://localhost:5000/api/teams/${teamId}`, {
+      .delete(`http://localhost:5000/api/sponsors/${sponsorId}`, {
         withCredentials: true,
       })
       .then(() => {
-        toast.success("team deleted successfully!");
-        setteams((prev) => prev.filter((team) => team._id !== teamId));
+        toast.success("sponsor deleted successfully!");
+        setsponsors((prev) => prev.filter((sponsor) => sponsor._id !== sponsorId));
       })
       .catch((error) => {
-        console.error("Error deleting team:", error);
-        toast.error("Failed to delete the team.");
+        console.error("Error deleting sponsor:", error);
+        toast.error("Failed to delete the sponsor.");
       });
   };
 
@@ -96,33 +98,33 @@ const Viewteams = () => {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h2 className="text-2xl font-bold text-center mb-6">teams</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">sponsors</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {teams.map((team) => (
+        {sponsors.map((sponsor) => (
           <div
-            key={team._id}
+            key={sponsor._id}
             className="bg-gradient-to-r from-teal-500 to-blue-600 shadow-xl rounded-lg overflow-hidden"
           >
             <div className="w-full h-40 overflow-hidden bg-gray-700">
               <img
-                src={team.image || "/placeholder.jpg"}
-                alt={team.name}
+                src={sponsor.image || "/placeholder.jpg"}
+                alt={sponsor.name}
                 className="w-full h-full object-contain"
               />
             </div>
             <div className="p-4 text-white">
-              <h3 className="text-lg font-semibold">{team.name.toUpperCase()}</h3>
-              <p className="text-sm">Position: {team.position}</p>
+              <h3 className="text-lg font-semibold">{sponsor.name.toUpperCase()}</h3>
+              <p className="text-sm">type: {sponsor.type}</p>
               <div className="flex justify-between mt-4">
                 <button
-                  onClick={() => handleUpdateClick(team)}
+                  onClick={() => handleUpdateClick(sponsor)}
                   className="bg-[#17569ec5] hover:bg-[#17569ef7] text-white px-3 py-2 rounded"
                 >
                   <FaEdit className="inline mr-2" />
                   Update
                 </button>
                 <button
-                  onClick={() => handleDelete(team._id)}
+                  onClick={() => handleDelete(sponsor._id)}
                   className="bg-[#a81717f0] hover:bg-red-600 text-white px-3 py-2 rounded"
                 >
                   <FaTrash className="inline mr-2" />
@@ -135,7 +137,7 @@ const Viewteams = () => {
       </div>
 
       {/* Update Modal */}
-      {selectedteam && (
+      {selectedsponsor && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div
             className="bg-black rounded-lg p-6 w-full max-w-md overflow-auto h-auto max-h-[80vh]"
@@ -145,7 +147,7 @@ const Viewteams = () => {
               msOverflowStyle: "none",
             }}
           >
-            <h3 className="text-lg font-bold mb-4">Update team</h3>
+            <h3 className="text-lg font-bold mb-4">Update sponsor</h3>
             <label className="block mb-2">
               Name:
               <input
@@ -157,11 +159,11 @@ const Viewteams = () => {
               />
             </label>
             <label className="block mb-2">
-              Position:
+              type:
               <input
                 type="text"
-                name="position"
-                value={updateData.position || ""}
+                name="type"
+                value={updateData.type || ""}
                 onChange={handleInputChange}
                 className="w-full border rounded p-2 text-black"
               />
@@ -184,7 +186,7 @@ const Viewteams = () => {
             </div>
             <div className="flex justify-end space-x-4 mt-4">
               <button
-                onClick={() => setSelectedteam(null)}
+                onClick={() => setSelectedsponsor(null)}
                 className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
               >
                 Cancel
@@ -203,4 +205,4 @@ const Viewteams = () => {
   );
 };
 
-export default Viewteams;
+export default Viewsponsors;

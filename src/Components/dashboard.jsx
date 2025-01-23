@@ -112,7 +112,7 @@ const Dashboard = () => {
       case "View Sponsors":
         return <Viewsponsors></Viewsponsors>  
       case "Add Sponsors":
-        return <Addsponsors></Addsponsors> 
+        return <Addsponsor></Addsponsor> 
     case "Logout":
       handleLogout();
       return null;
