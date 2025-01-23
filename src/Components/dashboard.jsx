@@ -9,6 +9,8 @@ import AddStalls from "../admin_components/AddStalls";
 import ViewStalls from "../admin_components/ViewStalls";
 import UploadPhoto from "../admin_components/UploadPhoto";
 import GiveCredits from "../volunteer_components/GiveCredits";
+import AddTeam from "../admin_components/AddTeam";
+import Viewteams from "../admin_components/ViewTeams";
 
 const Dashboard = () => {
   const [role, setRole] = useState("");
@@ -29,16 +31,21 @@ const Dashboard = () => {
     "View Volunteers",
     "Add Stalls",
     "View Stalls",
+    "Add Team", // New option for Admin
     "Upload Photo",
   ];
-
+  
+  
   const coreTeamOptions = [
     "Add Volunteer",
+    "Generate ID Cards", // Add this option for Core Team
     "View Volunteers",
     "Upload Photo",
     "Add Stalls",
     "View Stalls",
+    "View Teams",
   ];
+  
 
   const volunteerOptions = [
     "Upload Photo",
@@ -78,54 +85,55 @@ const Dashboard = () => {
   };
 
   const renderComponent = () => {
-    switch (activeComponent) {
-      case "Add Volunteer":
-        return <AddVolunteer />;
-      case "Generate ID Cards":
-        return <GenerateIDCards />;
-      case "View Volunteers":
-        return <ViewVolunteers />;
-      case "Add Stalls":
-        return <AddStalls />;
-      case "View Stalls":
-        return <ViewStalls />;
-      case "Upload Photo":
-        return <UploadPhoto />;
-      case "Give Credits":
-        return <GiveCredits />;
-      case "Logout":
-        handleLogout();
-        return null;
-      default:
-        return (
-          <div className="flex flex-col items-center justify-center h-full text-center text-white">
-            <img
-              src="/logo.png"
-              alt="Dashboard Logo"
-              className="w-32 h-32 mb-4"
-            />
-            <h1 className="text-4xl font-bold mb-2">Welcome to Your Dashboard</h1>
-            <p className="text-lg mb-6">
-              Manage volunteers, stalls, and more with ease!
-            </p>
-            <div className="flex space-x-4">
-              <button
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
-                onClick={() => setActiveComponent(availableOptions[0])}
-              >
-                Get Started
-              </button>
-              <button
-                className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
-                onClick={() => setIsSidebarOpen(true)}
-              >
-                Explore Options
-              </button>
-            </div>
+  switch (activeComponent) {
+    case "Add Volunteer":
+      return <AddVolunteer />;
+    case "Generate ID Cards": // Add this case
+      return <GenerateIDCards />;
+    case "View Volunteers":
+      return <ViewVolunteers />;
+    case "Add Stalls":
+      return <AddStalls />;
+    case "View Stalls":
+      return <ViewStalls />;
+    case "Upload Photo":
+      return <UploadPhoto />;
+    case "Give Credits":
+      return <GiveCredits />;
+    case "Add Team":
+      return <AddTeam></AddTeam> 
+      case "View Teams":
+        return <Viewteams></Viewteams> 
+    case "Logout":
+      handleLogout();
+      return null;
+    default:
+      return (
+        <div className="flex flex-col items-center justify-center h-full text-center text-white">
+          <img src="/logo.png" alt="Dashboard Logo" className="w-32 h-32 mb-4" />
+          <h1 className="text-4xl font-bold mb-2">Welcome to Your Dashboard</h1>
+          <p className="text-lg mb-6">
+            Manage volunteers, stalls, and more with ease!
+          </p>
+          <div className="flex space-x-4">
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+              onClick={() => setActiveComponent(availableOptions[0])}
+            >
+              Get Started
+            </button>
+            <button
+              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+              onClick={() => setIsSidebarOpen(true)}
+            >
+              Explore Options
+            </button>
           </div>
-        );
-    }
-  };
+        </div>
+      );
+  }
+};
+
 
   return (
     <div className="h-screen flex flex-col space-y-4 p-4">
