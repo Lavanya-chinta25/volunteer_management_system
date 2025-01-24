@@ -2,12 +2,11 @@ import React, { useState, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const AddTeam = () => {
+const AddCoreTeam = () => {
   const [formData, setFormData] = useState({
-    teamName: "",
-    teamImage: null,
-    teamPosition: "",
-    teamPriority: "", // Added teamPriority field
+    memberName: "",
+    memberImage: null,
+    memberPosition: "",
   });
 
   const fileInputRef = useRef(null); // Ref for the file input
@@ -17,7 +16,7 @@ const AddTeam = () => {
 
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "teamImage" ? files[0] : value,
+      [name]: name === "memberImage" ? files[0] : value,
     }));
   };
 
@@ -25,19 +24,18 @@ const AddTeam = () => {
     e.preventDefault();
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    const { teamName, teamImage, teamPosition, teamPriority } = formData;
+    const { memberName, memberImage, memberPosition } = formData;
 
-    if (!teamName || !teamImage || !teamPosition || teamPriority === "") {
+    if (!memberName || !memberImage || !memberPosition) {
       toast.error("All fields are required.");
       return;
     }
 
     // Prepare form data for the request
     const formDataPayload = new FormData();
-    formDataPayload.append("name", teamName);
-    formDataPayload.append("image", teamImage);
-    formDataPayload.append("position", teamPosition);
-    formDataPayload.append("priority", teamPriority);
+    formDataPayload.append("name", memberName);
+    formDataPayload.append("image", memberImage);
+    formDataPayload.append("position", memberPosition);
 
     try {
       // Get the auth token from localStorage
@@ -45,7 +43,7 @@ const AddTeam = () => {
 
       // Send POST request to backend with Bearer token
       const response = await axios.post(
-        "https://tzm-1.onrender.com/api/teams", // Backend endpoint
+        "https://tzm-1.onrender.com/api/coreteam", // Backend endpoint for core team
         formDataPayload,
         {
           headers: {
@@ -55,49 +53,48 @@ const AddTeam = () => {
         }
       );
 
-      toast.success("Team added successfully!");
+      toast.success("Core team member added successfully!");
       console.log("Response:", response.data);
 
       // Reset form and clear file input
       setFormData({
-        teamName: "",
-        teamImage: null,
-        teamPosition: "",
-        teamPriority: "",
+        memberName: "",
+        memberImage: null,
+        memberPosition: "",
       });
 
       if (fileInputRef.current) {
         fileInputRef.current.value = ""; // Clear the file input value
       }
     } catch (error) {
-      console.error("Error adding team:", error.response || error);
-      toast.error("Failed to add team. Please try again.");
+      console.error("Error adding core team member:", error.response || error);
+      toast.error("Failed to add core team member. Please try again.");
     }
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-white">Add Team</h2>
+      <h2 className="text-2xl font-bold text-white">Add Core Team Member</h2>
       <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
-        {/* Team Name Field */}
+        {/* Member Name Field */}
         <div>
-          <label className="text-white">Team Name:</label>
+          <label className="text-white">Member Name:</label>
           <input
             type="text"
-            name="teamName"
-            value={formData.teamName}
+            name="memberName"
+            value={formData.memberName}
             onChange={handleInputChange}
             className="w-full p-2 mt-1 rounded-md placeholder-gray-400 text-black focus:shadow-[0_0_10px_rgba(255,255,255,0.7)] focus:outline-none"
-            placeholder="Enter Team Name"
+            placeholder="Enter Member Name"
           />
         </div>
 
         {/* Image Upload Field */}
         <div>
-          <label className="text-white">Team Image:</label>
+          <label className="text-white">Member Image:</label>
           <input
             type="file"
-            name="teamImage"
+            name="memberImage"
             accept="image/*"
             onChange={handleInputChange}
             className="w-full p-2 mt-1 rounded-md text-white focus:shadow-[0_0_10px_rgba(255,255,255,0.7)] focus:outline-none"
@@ -105,39 +102,26 @@ const AddTeam = () => {
           />
         </div>
 
-        {/* Team Position Field */}
+        {/* Member Position Field */}
         <div>
-          <label className="text-white">Team Position:</label>
+          <label className="text-white">Member Position:</label>
           <input
             type="text"
-            name="teamPosition"
-            value={formData.teamPosition}
+            name="memberPosition"
+            value={formData.memberPosition}
             onChange={handleInputChange}
             className="w-full p-2 mt-1 rounded-md placeholder-gray-400 text-black focus:shadow-[0_0_10px_rgba(255,255,255,0.7)] focus:outline-none"
-            placeholder="Enter Team Position"
+            placeholder="Enter Member Position"
           />
         </div>
 
-        {/* Team Priority Field */}
-        <div>
-          <label className="text-white">Team Priority:</label>
-          <input
-            type="number"
-            name="teamPriority"
-            value={formData.teamPriority}
-            onChange={handleInputChange}
-            className="w-full p-2 mt-1 rounded-md placeholder-gray-400 text-black focus:shadow-[0_0_10px_rgba(255,255,255,0.7)] focus:outline-none"
-            placeholder="Enter Team Priority (numeric value)"
-          />
-        </div>
-
-        {/* Add Team Button */}
+        {/* Add Member Button */}
         <div className="flex justify-center">
           <button
             type="submit"
             className="bg-[#5f5f60d2] text-white font-semibold p-2 rounded-lg hover:bg-[#292929] transition duration-300"
           >
-            Add Team
+            Add Member
           </button>
         </div>
       </form>
@@ -145,4 +129,4 @@ const AddTeam = () => {
   );
 };
 
-export default AddTeam;
+export default AddCoreTeam;

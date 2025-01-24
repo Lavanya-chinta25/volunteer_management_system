@@ -13,6 +13,8 @@ import AddTeam from "../admin_components/AddTeam";
 import Viewteams from "../admin_components/ViewTeams";
 import Viewsponsors from "../admin_components/ViewSponsors";
 import Addsponsor from "../admin_components/AddSponsors";
+import Viewcoreteam from "../admin_components/ViewCoreTeams";
+import AddCoreTeam from "../admin_components/AddCoreTeam";
 
 const Dashboard = () => {
   const [role, setRole] = useState("");
@@ -34,6 +36,8 @@ const Dashboard = () => {
 
   const adminOptions = [
     "Add Volunteer",
+    "View CoreTeam",
+    "Add CoreTeam",
     "Generate ID Cards",
     "View Volunteers",
     "Add Stalls",
@@ -43,6 +47,7 @@ const Dashboard = () => {
     "View Sponsors",
     "Add Sponsors",
     "View Teams",
+
   ];
 
   const coreTeamOptions = [
@@ -119,6 +124,10 @@ const Dashboard = () => {
         return <Viewsponsors />;
       case "Add Sponsors":
         return <Addsponsor />;
+      case "View CoreTeam":
+        return <Viewcoreteam></Viewcoreteam>
+      case "Add CoreTeam":
+        return <AddCoreTeam></AddCoreTeam>
       case "Logout":
         handleLogout();
         return null;
