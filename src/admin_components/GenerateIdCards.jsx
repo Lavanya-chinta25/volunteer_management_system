@@ -8,9 +8,15 @@ const GenerateIDCards = () => {
   // Fetch volunteers from the backend
   const fetchVolunteers = async () => {
     try {
+      const authToken = localStorage.getItem("authToken");
+
       const response = await axios.get(
         "https://tzm-1.onrender.com/api/auth/volunteers",
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Send the auth token as a Bearer token
+          },
+        }
       );
       setVolunteers(response.data.volunteers);
     } catch (error) {

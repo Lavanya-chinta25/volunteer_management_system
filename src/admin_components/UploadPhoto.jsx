@@ -23,9 +23,15 @@ const Uploadphoto = () => {
     formData.append("photo", photo);
 
     try {
+      // Get the auth token from localStorage
+      const authToken = localStorage.getItem("authToken");
+
+      // Send the POST request with the Authorization header
       const response = await fetch("https://tzm-1.onrender.com/api/auth/upload-photo", {
         method: "POST",
-        credentials: "include", // Includes the authentication cookie
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
+        },
         body: formData, // Attach the photo
       });
 

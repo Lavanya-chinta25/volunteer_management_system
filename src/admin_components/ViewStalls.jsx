@@ -12,19 +12,26 @@ const ViewStalls = () => {
   const [imageFile, setImageFile] = useState(null); // Store the selected image file
 
   // Fetch stalls from the API
-  const fetchStalls = () => {
+  const fetchStalls = async () => {
     setLoading(true);
-    axios
-      .get("https://tzm-1.onrender.com/api/stalls", { withCredentials: true })
-      .then((response) => {
-        setStalls(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching stalls:", error);
-        toast.error("Failed to fetch stalls data.");
-        setLoading(false);
-      });
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      const response = await axios.get(
+        "https://tzm-1.onrender.com/api/stalls",
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
+          },
+        }
+      );
+      setStalls(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching stalls:", error);
+      toast.error("Failed to fetch stalls data.");
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -50,7 +57,7 @@ const ViewStalls = () => {
     }
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const formData = new FormData();
     formData.append("name", updateData.name);
     formData.append("position", updateData.position);
@@ -58,38 +65,44 @@ const ViewStalls = () => {
       formData.append("image", imageFile); // Add image file to the form data
     }
 
-    axios
-      .put(`https://tzm-1.onrender.com/api/stalls/${selectedStall._id}`, formData, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then(() => {
-        toast.success("Stall updated successfully!");
-        setSelectedStall(null); // Close modal
-        setImageFile(null); // Reset image file
-        fetchStalls(); // Refetch stalls from the backend
-      })
-      .catch((error) => {
-        console.error("Error updating stall:", error);
-        toast.error("Failed to update the stall.");
-      });
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      await axios.put(
+        `https://tzm-1.onrender.com/api/stalls/${selectedStall._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      toast.success("Stall updated successfully!");
+      setSelectedStall(null); // Close modal
+      setImageFile(null); // Reset image file
+      fetchStalls(); // Refetch stalls from the backend
+    } catch (error) {
+      console.error("Error updating stall:", error);
+      toast.error("Failed to update the stall.");
+    }
   };
 
-  const handleDelete = (stallId) => {
-    axios
-      .delete(`https://tzm-1.onrender.com/api/stalls/${stallId}`, {
-        withCredentials: true,
-      })
-      .then(() => {
-        toast.success("Stall deleted successfully!");
-        setStalls((prev) => prev.filter((stall) => stall._id !== stallId));
-      })
-      .catch((error) => {
-        console.error("Error deleting stall:", error);
-        toast.error("Failed to delete the stall.");
+  const handleDelete = async (stallId) => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      await axios.delete(`https://tzm-1.onrender.com/api/stalls/${stallId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
+        },
       });
+      toast.success("Stall deleted successfully!");
+      setStalls((prev) => prev.filter((stall) => stall._id !== stallId));
+    } catch (error) {
+      console.error("Error deleting stall:", error);
+      toast.error("Failed to delete the stall.");
+    }
   };
 
   if (loading) return <div>Loading...</div>;

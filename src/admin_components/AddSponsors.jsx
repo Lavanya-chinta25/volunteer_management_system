@@ -38,19 +38,22 @@ const Addsponsor = () => {
     formDataPayload.append("type", sponsorType);
 
     try {
-      // Send POST request to backend
+      // Get the auth token from localStorage
+      const authToken = localStorage.getItem("authToken");
+
+      // Send POST request to backend with Bearer token
       const response = await axios.post(
         "https://tzm-1.onrender.com/api/sponsors", // Backend endpoint
         formDataPayload,
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authToken}`, // Add token in Authorization header
           },
-          withCredentials: true, // Include cookies for authentication
         }
       );
 
-      toast.success("sponsor added successfully!");
+      toast.success("Sponsor added successfully!");
       console.log("Response:", response.data);
 
       // Reset form and clear file input
@@ -71,24 +74,24 @@ const Addsponsor = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-white">Add sponsor</h2>
+      <h2 className="text-2xl font-bold text-white">Add Sponsor</h2>
       <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
-        {/* sponsor Name Field */}
+        {/* Sponsor Name Field */}
         <div>
-          <label className="text-white">sponsor Name:</label>
+          <label className="text-white">Sponsor Name:</label>
           <input
             type="text"
             name="sponsorName"
             value={formData.sponsorName}
             onChange={handleInputChange}
             className="w-full p-2 mt-1 rounded-md placeholder-gray-400 text-black focus:shadow-[0_0_10px_rgba(255,255,255,0.7)] focus:outline-none"
-            placeholder="Enter sponsor Name"
+            placeholder="Enter Sponsor Name"
           />
         </div>
 
         {/* Image Upload Field */}
         <div>
-          <label className="text-white">sponsor Image:</label>
+          <label className="text-white">Sponsor Image:</label>
           <input
             type="file"
             name="sponsorImage"
@@ -99,7 +102,7 @@ const Addsponsor = () => {
           />
         </div>
 
-        {/* sponsor Type Field */}
+        {/* Sponsor Type Field */}
         <div>
           <label className="text-white">Sponsor Type:</label>
           <input
@@ -108,17 +111,17 @@ const Addsponsor = () => {
             value={formData.sponsorType}
             onChange={handleInputChange}
             className="w-full p-2 mt-1 rounded-md placeholder-gray-400 text-black focus:shadow-[0_0_10px_rgba(255,255,255,0.7)] focus:outline-none"
-            placeholder="Enter sponsor Position"
+            placeholder="Enter Sponsor Type"
           />
         </div>
 
-        {/* Add sponsor Button */}
+        {/* Add Sponsor Button */}
         <div className="flex justify-center">
           <button
             type="submit"
             className="bg-[#5f5f60d2] text-white font-semibold p-2 rounded-lg hover:bg-[#292929] transition duration-300"
           >
-            Add sponsor
+            Add Sponsor
           </button>
         </div>
       </form>

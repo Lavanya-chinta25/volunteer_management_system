@@ -34,12 +34,15 @@ const AddVolunteer = () => {
     }
   
     try {
+      // Get the auth token from localStorage
+      const authToken = localStorage.getItem("authToken");
+
       // API call to add a volunteer
       const response = await fetch("https://tzm-1.onrender.com/api/auth/add", {
           method: "POST",
-          credentials: "include", // Includes the authentication cookie
           headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`, // Add token in Authorization header
           },
           body: JSON.stringify({
               name,

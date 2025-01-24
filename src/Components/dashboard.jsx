@@ -22,10 +22,15 @@ const Dashboard = () => {
 
   useEffect(() => {
     const storedRole = localStorage.getItem("userRole");
-    if (storedRole) {
+    const authToken = localStorage.getItem("authToken");
+
+    if (!authToken) {
+      // Redirect to login page if no token is found in localStorage
+      navigate("/");
+    } else {
       setRole(storedRole);
     }
-  }, []);
+  }, [navigate]);
 
   const adminOptions = [
     "Add Volunteer",
@@ -33,24 +38,21 @@ const Dashboard = () => {
     "View Volunteers",
     "Add Stalls",
     "View Stalls",
-    "Add Team", // New option for Admin
+    "Add Team",
     "Upload Photo",
     "View Sponsors",
     "Add Sponsors",
     "View Teams",
   ];
-  
-  
+
   const coreTeamOptions = [
     "Add Volunteer",
-    "Generate ID Cards", // Add this option for Core Team
+    "Generate ID Cards",
     "View Volunteers",
     "Upload Photo",
     "Add Stalls",
     "View Stalls",
-    
   ];
-  
 
   const volunteerOptions = [
     "Upload Photo",
@@ -70,9 +72,13 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     try {
+      const authToken = localStorage.getItem("authToken");
+
       const response = await fetch("https://tzm-1.onrender.com/api/auth/logout", {
         method: "POST",
-        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Send the token in the Authorization header
+        },
       });
 
       if (response.ok) {
@@ -90,59 +96,58 @@ const Dashboard = () => {
   };
 
   const renderComponent = () => {
-  switch (activeComponent) {
-    case "Add Volunteer":
-      return <AddVolunteer />;
-    case "Generate ID Cards": // Add this case
-      return <GenerateIDCards />;
-    case "View Volunteers":
-      return <ViewVolunteers />;
-    case "Add Stalls":
-      return <AddStalls />;
-    case "View Stalls":
-      return <ViewStalls />;
-    case "Upload Photo":
-      return <UploadPhoto />;
-    case "Give Credits":
-      return <GiveCredits />;
-    case "Add Team":
-      return <AddTeam></AddTeam> 
+    switch (activeComponent) {
+      case "Add Volunteer":
+        return <AddVolunteer />;
+      case "Generate ID Cards":
+        return <GenerateIDCards />;
+      case "View Volunteers":
+        return <ViewVolunteers />;
+      case "Add Stalls":
+        return <AddStalls />;
+      case "View Stalls":
+        return <ViewStalls />;
+      case "Upload Photo":
+        return <UploadPhoto />;
+      case "Give Credits":
+        return <GiveCredits />;
+      case "Add Team":
+        return <AddTeam />;
       case "View Teams":
-        return <Viewteams></Viewteams> 
+        return <Viewteams />;
       case "View Sponsors":
-        return <Viewsponsors></Viewsponsors>  
+        return <Viewsponsors />;
       case "Add Sponsors":
-        return <Addsponsor></Addsponsor> 
-    case "Logout":
-      handleLogout();
-      return null;
-    default:
-      return (
-        <div className="flex flex-col items-center justify-center h-full text-center text-white">
-          <img src="/logo.png" alt="Dashboard Logo" className="w-32 h-32 mb-4" />
-          <h1 className="text-4xl font-bold mb-2">Welcome to Your Dashboard</h1>
-          <p className="text-lg mb-6">
-            Manage volunteers, stalls, and more with ease!
-          </p>
-          <div className="flex space-x-4">
-            <button
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
-              onClick={() => setActiveComponent(availableOptions[0])}
-            >
-              Get Started
-            </button>
-            <button
-              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
-              onClick={() => setIsSidebarOpen(true)}
-            >
-              Explore Options
-            </button>
+        return <Addsponsor />;
+      case "Logout":
+        handleLogout();
+        return null;
+      default:
+        return (
+          <div className="flex flex-col items-center justify-center h-full text-center text-white">
+            <img src="/logo.png" alt="Dashboard Logo" className="w-32 h-32 mb-4" />
+            <h1 className="text-4xl font-bold mb-2">Welcome to Your Dashboard</h1>
+            <p className="text-lg mb-6">
+              Manage volunteers, stalls, and more with ease!
+            </p>
+            <div className="flex space-x-4">
+              <button
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+                onClick={() => setActiveComponent(availableOptions[0])}
+              >
+                Get Started
+              </button>
+              <button
+                className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+                onClick={() => setIsSidebarOpen(true)}
+              >
+                Explore Options
+              </button>
+            </div>
           </div>
-        </div>
-      );
-  }
-};
-
+        );
+    }
+  };
 
   return (
     <div className="h-screen flex flex-col space-y-4 p-4">
@@ -156,20 +161,12 @@ const Dashboard = () => {
       />
 
       <div className="w-full py-4 shadow-md relative flex items-center justify-between lg:justify-center">
-        <h1 className="title font-bold text-3xl text-white">
-          VOLUNTEER MANAGEMENT SYSTEM
-        </h1>
+        <h1 className="title font-bold text-3xl text-white">VOLUNTEER MANAGEMENT SYSTEM</h1>
         <button
           className="lg:hidden text-white p-2 focus:outline-none"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

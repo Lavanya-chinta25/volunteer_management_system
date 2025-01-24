@@ -4,35 +4,42 @@ import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 const Viewteams = () => {
-  const [teams, setteams] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedteam, setSelectedteam] = useState(null); // For the update modal
+  const [selectedTeam, setSelectedTeam] = useState(null); // For the update modal
   const [updateData, setUpdateData] = useState({});
   const [imagePreview, setImagePreview] = useState(""); // Preview the selected image
   const [imageFile, setImageFile] = useState(null); // Store the selected image file
 
   // Fetch teams from the API
-  const fetchteams = () => {
+  const fetchTeams = async () => {
     setLoading(true);
-    axios
-      .get("https://tzm-1.onrender.com/api/teams", { withCredentials: true })
-      .then((response) => {
-        setteams(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching teams:", error);
-        toast.error("Failed to fetch teams data.");
-        setLoading(false);
-      });
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      const response = await axios.get(
+        "https://tzm-1.onrender.com/api/teams",
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
+          },
+        }
+      );
+      setTeams(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+      toast.error("Failed to fetch teams data.");
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetchteams();
+    fetchTeams();
   }, []);
 
   const handleUpdateClick = (team) => {
-    setSelectedteam(team);
+    setSelectedTeam(team);
     setUpdateData({ ...team }); // Pre-populate the update form
     setImagePreview(team.image || "/placeholder.jpg"); // Set initial image preview
   };
@@ -50,7 +57,7 @@ const Viewteams = () => {
     }
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const formData = new FormData();
     formData.append("name", updateData.name);
     formData.append("position", updateData.position);
@@ -58,45 +65,51 @@ const Viewteams = () => {
       formData.append("image", imageFile); // Add image file to the form data
     }
 
-    axios
-      .put(`https://tzm-1.onrender.com/api/teams/${selectedteam._id}`, formData, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then(() => {
-        toast.success("team updated successfully!");
-        setSelectedteam(null); // Close modal
-        setImageFile(null); // Reset image file
-        fetchteams(); // Refetch teams from the backend
-      })
-      .catch((error) => {
-        console.error("Error updating team:", error);
-        toast.error("Failed to update the team.");
-      });
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      await axios.put(
+        `https://tzm-1.onrender.com/api/teams/${selectedTeam._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      toast.success("Team updated successfully!");
+      setSelectedTeam(null); // Close modal
+      setImageFile(null); // Reset image file
+      fetchTeams(); // Refetch teams from the backend
+    } catch (error) {
+      console.error("Error updating team:", error);
+      toast.error("Failed to update the team.");
+    }
   };
 
-  const handleDelete = (teamId) => {
-    axios
-      .delete(`https://tzm-1.onrender.com/api/teams/${teamId}`, {
-        withCredentials: true,
-      })
-      .then(() => {
-        toast.success("team deleted successfully!");
-        setteams((prev) => prev.filter((team) => team._id !== teamId));
-      })
-      .catch((error) => {
-        console.error("Error deleting team:", error);
-        toast.error("Failed to delete the team.");
+  const handleDelete = async (teamId) => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      await axios.delete(`https://tzm-1.onrender.com/api/teams/${teamId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
+        },
       });
+      toast.success("Team deleted successfully!");
+      setTeams((prev) => prev.filter((team) => team._id !== teamId));
+    } catch (error) {
+      console.error("Error deleting team:", error);
+      toast.error("Failed to delete the team.");
+    }
   };
 
   if (loading) return <div>Loading...</div>;
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h2 className="text-2xl font-bold text-center mb-6">teams</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Teams</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {teams.map((team) => (
           <div
@@ -135,7 +148,7 @@ const Viewteams = () => {
       </div>
 
       {/* Update Modal */}
-      {selectedteam && (
+      {selectedTeam && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div
             className="bg-black rounded-lg p-6 w-full max-w-md overflow-auto h-auto max-h-[80vh]"
@@ -145,7 +158,7 @@ const Viewteams = () => {
               msOverflowStyle: "none",
             }}
           >
-            <h3 className="text-lg font-bold mb-4">Update team</h3>
+            <h3 className="text-lg font-bold mb-4">Update Team</h3>
             <label className="block mb-2">
               Name:
               <input
@@ -184,7 +197,7 @@ const Viewteams = () => {
             </div>
             <div className="flex justify-end space-x-4 mt-4">
               <button
-                onClick={() => setSelectedteam(null)}
+                onClick={() => setSelectedTeam(null)}
                 className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
               >
                 Cancel

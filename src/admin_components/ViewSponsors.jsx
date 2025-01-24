@@ -12,21 +12,26 @@ const Viewsponsors = () => {
   const [imageFile, setImageFile] = useState(null); // Store the selected image file
 
   // Fetch sponsors from the API
-  const fetchsponsors = () => {
+  const fetchsponsors = async () => {
     setLoading(true);
-    axios
-      .get("https://tzm-1.onrender.com/api/sponsors", { withCredentials: true })
-      .then((response) => {
-        console.log("sponsr get");
-        console.log("view sponser",response);
-        setsponsors(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching sponsors:", error);
-        toast.error("Failed to fetch sponsors data.");
-        setLoading(false);
-      });
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      const response = await axios.get(
+        "https://tzm-1.onrender.com/api/sponsors",
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
+          },
+        }
+      );
+      setsponsors(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching sponsors:", error);
+      toast.error("Failed to fetch sponsors data.");
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -52,7 +57,7 @@ const Viewsponsors = () => {
     }
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const formData = new FormData();
     formData.append("name", updateData.name);
     formData.append("type", updateData.type);
@@ -60,45 +65,51 @@ const Viewsponsors = () => {
       formData.append("image", imageFile); // Add image file to the form data
     }
 
-    axios
-      .put(`https://tzm-1.onrender.com/api/sponsors/${selectedsponsor._id}`, formData, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then(() => {
-        toast.success("sponsor updated successfully!");
-        setSelectedsponsor(null); // Close modal
-        setImageFile(null); // Reset image file
-        fetchsponsors(); // Refetch sponsors from the backend
-      })
-      .catch((error) => {
-        console.error("Error updating sponsor:", error);
-        toast.error("Failed to update the sponsor.");
-      });
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      await axios.put(
+        `https://tzm-1.onrender.com/api/sponsors/${selectedsponsor._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      toast.success("Sponsor updated successfully!");
+      setSelectedsponsor(null); // Close modal
+      setImageFile(null); // Reset image file
+      fetchsponsors(); // Refetch sponsors from the backend
+    } catch (error) {
+      console.error("Error updating sponsor:", error);
+      toast.error("Failed to update the sponsor.");
+    }
   };
 
-  const handleDelete = (sponsorId) => {
-    axios
-      .delete(`https://tzm-1.onrender.com/api/sponsors/${sponsorId}`, {
-        withCredentials: true,
-      })
-      .then(() => {
-        toast.success("sponsor deleted successfully!");
-        setsponsors((prev) => prev.filter((sponsor) => sponsor._id !== sponsorId));
-      })
-      .catch((error) => {
-        console.error("Error deleting sponsor:", error);
-        toast.error("Failed to delete the sponsor.");
+  const handleDelete = async (sponsorId) => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      await axios.delete(`https://tzm-1.onrender.com/api/sponsors/${sponsorId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
+        },
       });
+      toast.success("Sponsor deleted successfully!");
+      setsponsors((prev) => prev.filter((sponsor) => sponsor._id !== sponsorId));
+    } catch (error) {
+      console.error("Error deleting sponsor:", error);
+      toast.error("Failed to delete the sponsor.");
+    }
   };
 
   if (loading) return <div>Loading...</div>;
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h2 className="text-2xl font-bold text-center mb-6">sponsors</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Sponsors</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {sponsors.map((sponsor) => (
           <div
@@ -114,7 +125,7 @@ const Viewsponsors = () => {
             </div>
             <div className="p-4 text-white">
               <h3 className="text-lg font-semibold">{sponsor.name.toUpperCase()}</h3>
-              <p className="text-sm">type: {sponsor.type}</p>
+              <p className="text-sm">Type: {sponsor.type}</p>
               <div className="flex justify-between mt-4">
                 <button
                   onClick={() => handleUpdateClick(sponsor)}
@@ -147,7 +158,7 @@ const Viewsponsors = () => {
               msOverflowStyle: "none",
             }}
           >
-            <h3 className="text-lg font-bold mb-4">Update sponsor</h3>
+            <h3 className="text-lg font-bold mb-4">Update Sponsor</h3>
             <label className="block mb-2">
               Name:
               <input
@@ -159,7 +170,7 @@ const Viewsponsors = () => {
               />
             </label>
             <label className="block mb-2">
-              type:
+              Type:
               <input
                 type="text"
                 name="type"

@@ -8,15 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState(""); // State for password
   const [showButton, setShowButton] = useState(true); // State to manage button visibility
   const navigate = useNavigate();
-  /** 
-  // Check if the user is already authenticated (on page load or refresh)
-  useEffect(() => {
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
-    if (isAuthenticated === "true") {
-      navigate("/dashboard"); // If already authenticated, navigate to dashboard
-    }
-  }, [navigate]);
-  */
+
   // Handles input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -31,7 +23,7 @@ const Login = () => {
   // Handles form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!tzId) {
       toast.error("Please enter your Teckzite ID.", { position: "top-center" });
       setShowButton(false);
@@ -42,7 +34,7 @@ const Login = () => {
       setShowButton(false);
       return;
     }
-  
+
     if (
       !tzId.toUpperCase().startsWith("TZ25V") ||
       isNaN(tzId.slice(5))
@@ -54,29 +46,26 @@ const Login = () => {
       setShowButton(false);
       return;
     }
-  
+
     try {
       const response = await fetch("https://tzm-1.onrender.com/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Include cookies in the request
         body: JSON.stringify({ tzId: tzId.toUpperCase(), password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
-        // Clear any previous session data
-        localStorage.clear();
-  
-        // Save the new session data
+        // Save the auth token and role in local storage
+        localStorage.setItem("authToken", data.token); // Save token
         localStorage.setItem("userRole", data.role);
         localStorage.setItem("isAuthenticated", "true");
-  
+
         toast.success("Login successful", { position: "top-center" });
-  
+
         // Navigate to the appropriate dashboard
         navigate("/dashboard");
       } else {
@@ -90,7 +79,6 @@ const Login = () => {
       setShowButton(false);
     }
   };
-  
 
   return (
     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

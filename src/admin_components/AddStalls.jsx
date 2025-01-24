@@ -49,15 +49,18 @@ const AddStalls = () => {
     formDataPayload.append("position", stallPosition);
 
     try {
-      // Send POST request to backend
+      // Get the auth token from localStorage
+      const authToken = localStorage.getItem("authToken");
+
+      // Send POST request to backend with Bearer token
       const response = await axios.post(
         "https://tzm-1.onrender.com/api/stalls", // Backend endpoint
         formDataPayload,
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authToken}`, // Add token in Authorization header
           },
-          withCredentials: true, // Include cookies for authentication
         }
       );
 
