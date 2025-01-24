@@ -133,27 +133,41 @@ const Dashboard = () => {
         return null;
       default:
         return (
-          <div className="flex flex-col items-center justify-center h-full text-center text-white">
-            <h1 className="text-4xl font-bold mb-2">TECKZITE 2k25</h1>
-            <h3 className="text-4xl font-bold mb-2">Welcome to Your Dashboard</h3>
-            <p className="text-lg mb-6">
-              Manage volunteers, stalls, and more with ease!
-            </p>
-            <div className="flex space-x-4">
-              <button
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
-                onClick={() => setActiveComponent(availableOptions[0])}
-              >
-                Get Started
-              </button>
-              <button
-                className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
-                onClick={() => setIsSidebarOpen(true)}
-              >
-                Explore Options
-              </button>
-            </div>
+          <div
+          className="bg-black/30 backdrop-blur-lg rounded-lg shadow-lg mx-auto p-8"
+          style={{
+            maxWidth: "90%", // Keeps the box responsive and prevents overflow.
+            width: "600px", // Set a consistent width for the box.
+            margin: "0 auto", // Centers the box horizontally.
+            textAlign: "center",
+            minHeight: "350px", // Increased height for the box.
+          }}
+        >
+          <h1 className="text-4xl font-bold mb-2">TECKZITE 2k25</h1>
+          <h3 className="text-4xl font-bold mb-2">Welcome to Your Dashboard</h3>
+          <p className="text-lg mb-6">
+            Manage volunteers, stalls, and more with ease!
+          </p>
+          <div className="flex space-x-4 justify-center">
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+              onClick={() => setActiveComponent(availableOptions[0])}
+            >
+              Get Started
+            </button>
+            <button
+              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+              onClick={() => setIsSidebarOpen(true)}
+            >
+              Explore Options
+            </button>
           </div>
+        </div>
+        
+        
+        
+
+        
         );
     }
   };
