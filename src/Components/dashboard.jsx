@@ -134,8 +134,8 @@ const Dashboard = () => {
       default:
         return (
           <div className="flex flex-col items-center justify-center h-full text-center text-white">
-            <img src="/logo.png" alt="Dashboard Logo" className="w-32 h-32 mb-4" />
-            <h1 className="text-4xl font-bold mb-2">Welcome to Your Dashboard</h1>
+            <h1 className="text-4xl font-bold mb-2">TECKZITE 2k25</h1>
+            <h3 className="text-4xl font-bold mb-2">Welcome to Your Dashboard</h3>
             <p className="text-lg mb-6">
               Manage volunteers, stalls, and more with ease!
             </p>
