@@ -35,7 +35,7 @@ const AddVolunteer = () => {
   
     try {
       // API call to add a volunteer
-      const response = await fetch("http://localhost:5000/api/auth/add", {
+      const response = await fetch("https://tzm-1.onrender.com/api/auth/add", {
           method: "POST",
           credentials: "include", // Includes the authentication cookie
           headers: {

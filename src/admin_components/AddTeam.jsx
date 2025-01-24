@@ -40,7 +40,7 @@ const AddTeam = () => {
     try {
       // Send POST request to backend
       const response = await axios.post(
-        "http://localhost:5000/api/teams", // Backend endpoint
+        "https://tzm-1.onrender.com/api/teams", // Backend endpoint
         formDataPayload,
         {
           headers: {

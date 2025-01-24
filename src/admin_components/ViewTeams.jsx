@@ -15,7 +15,7 @@ const Viewteams = () => {
   const fetchteams = () => {
     setLoading(true);
     axios
-      .get("http://localhost:5000/api/teams", { withCredentials: true })
+      .get("https://tzm-1.onrender.com/api/teams", { withCredentials: true })
       .then((response) => {
         setteams(response.data);
         setLoading(false);
@@ -59,7 +59,7 @@ const Viewteams = () => {
     }
 
     axios
-      .put(`http://localhost:5000/api/teams/${selectedteam._id}`, formData, {
+      .put(`https://tzm-1.onrender.com/api/teams/${selectedteam._id}`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -79,7 +79,7 @@ const Viewteams = () => {
 
   const handleDelete = (teamId) => {
     axios
-      .delete(`http://localhost:5000/api/teams/${teamId}`, {
+      .delete(`https://tzm-1.onrender.com/api/teams/${teamId}`, {
         withCredentials: true,
       })
       .then(() => {

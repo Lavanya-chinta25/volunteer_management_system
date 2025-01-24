@@ -40,7 +40,7 @@ const Addsponsor = () => {
     try {
       // Send POST request to backend
       const response = await axios.post(
-        "http://localhost:5000/api/sponsors", // Backend endpoint
+        "https://tzm-1.onrender.com/api/sponsors", // Backend endpoint
         formDataPayload,
         {
           headers: {

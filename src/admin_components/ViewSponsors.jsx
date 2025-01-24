@@ -15,7 +15,7 @@ const Viewsponsors = () => {
   const fetchsponsors = () => {
     setLoading(true);
     axios
-      .get("http://localhost:5000/api/sponsors", { withCredentials: true })
+      .get("https://tzm-1.onrender.com/api/sponsors", { withCredentials: true })
       .then((response) => {
         console.log("sponsr get");
         console.log("view sponser",response);
@@ -61,7 +61,7 @@ const Viewsponsors = () => {
     }
 
     axios
-      .put(`http://localhost:5000/api/sponsors/${selectedsponsor._id}`, formData, {
+      .put(`https://tzm-1.onrender.com/api/sponsors/${selectedsponsor._id}`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -81,7 +81,7 @@ const Viewsponsors = () => {
 
   const handleDelete = (sponsorId) => {
     axios
-      .delete(`http://localhost:5000/api/sponsors/${sponsorId}`, {
+      .delete(`https://tzm-1.onrender.com/api/sponsors/${sponsorId}`, {
         withCredentials: true,
       })
       .then(() => {

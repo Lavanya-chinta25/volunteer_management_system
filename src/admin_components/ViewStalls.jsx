@@ -15,7 +15,7 @@ const ViewStalls = () => {
   const fetchStalls = () => {
     setLoading(true);
     axios
-      .get("http://localhost:5000/api/stalls", { withCredentials: true })
+      .get("https://tzm-1.onrender.com/api/stalls", { withCredentials: true })
       .then((response) => {
         setStalls(response.data);
         setLoading(false);
@@ -59,7 +59,7 @@ const ViewStalls = () => {
     }
 
     axios
-      .put(`http://localhost:5000/api/stalls/${selectedStall._id}`, formData, {
+      .put(`https://tzm-1.onrender.com/api/stalls/${selectedStall._id}`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -79,7 +79,7 @@ const ViewStalls = () => {
 
   const handleDelete = (stallId) => {
     axios
-      .delete(`http://localhost:5000/api/stalls/${stallId}`, {
+      .delete(`https://tzm-1.onrender.com/api/stalls/${stallId}`, {
         withCredentials: true,
       })
       .then(() => {

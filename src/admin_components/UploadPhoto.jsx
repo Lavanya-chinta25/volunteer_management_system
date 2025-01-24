@@ -23,7 +23,7 @@ const Uploadphoto = () => {
     formData.append("photo", photo);
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/upload-photo", {
+      const response = await fetch("https://tzm-1.onrender.com/api/auth/upload-photo", {
         method: "POST",
         credentials: "include", // Includes the authentication cookie
         body: formData, // Attach the photo

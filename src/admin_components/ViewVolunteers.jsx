@@ -14,7 +14,7 @@ const ViewVolunteers = () => {
   useEffect(() => {
     // Fetch volunteers data from the backend API
     axios
-      .get("http://localhost:5000/api/auth/volunteers", {
+      .get("https://tzm-1.onrender.com/api/auth/volunteers", {
         withCredentials: true,
       })
       .then((response) => {
