@@ -3,7 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import AddVolunteer from "../admin_components/AddVolunteer";
-import GenerateIDCards from "../admin_components/GenerateIDCards";
+import GenerateIDCards from "../admin_components/Generate";
 import ViewVolunteers from "../admin_components/ViewVolunteers";
 import AddStalls from "../admin_components/AddStalls";
 import ViewStalls from "../admin_components/ViewStalls";
