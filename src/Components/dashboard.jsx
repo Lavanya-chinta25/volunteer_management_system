@@ -188,7 +188,11 @@ const Dashboard = () => {
           className={`bg-white/10 backdrop-blur-lg mt-9 p-6 flex flex-col rounded-xl shadow-lg transform lg:transform-none ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           } transition-transform duration-300 ease-in-out lg:w-1/5 w-full lg:block fixed lg:static z-20 overflow-y-auto`}
-          style={{ maxHeight: "calc(100vh - 9rem)" }}
+          style={{ maxHeight: "calc(100vh - 9rem)",
+            overflowY: "scroll",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+           }}
         >
           <ul className="space-y-2">
             {availableOptions.map((item) => (
