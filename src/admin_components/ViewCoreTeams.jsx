@@ -3,45 +3,45 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-const ViewStalls = () => {
-  const [stalls, setStalls] = useState([]);
+const Viewcoreteam = () => {
+  const [coreTeam, setCoreTeam] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedStall, setSelectedStall] = useState(null); // For the update modal
+  const [selectedMember, setSelectedMember] = useState(null); // For the update modal
   const [updateData, setUpdateData] = useState({});
   const [imagePreview, setImagePreview] = useState(""); // Preview the selected image
   const [imageFile, setImageFile] = useState(null); // Store the selected image file
 
-  // Fetch stalls from the API
-  const fetchStalls = async () => {
+  // Fetch core team members from the API
+  const fetchCoreTeam = async () => {
     setLoading(true);
     try {
       const authToken = localStorage.getItem("authToken");
 
       const response = await axios.get(
-        "https://tzm-1.onrender.com/api/stalls",
+        "https://tzm-1.onrender.com/api/coreteam",
         {
           headers: {
             Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
           },
         }
       );
-      setStalls(response.data);
+      setCoreTeam(response.data);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching stalls:", error);
-      toast.error("Failed to fetch stalls data.");
+      console.error("Error fetching core team members:", error);
+      toast.error("Failed to fetch core team data.");
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchStalls();
+    fetchCoreTeam();
   }, []);
 
-  const handleUpdateClick = (stall) => {
-    setSelectedStall(stall);
-    setUpdateData({ ...stall }); // Pre-populate the update form
-    setImagePreview(stall.image || "/placeholder.jpg"); // Set initial image preview
+  const handleUpdateClick = (member) => {
+    setSelectedMember(member);
+    setUpdateData({ ...member }); // Pre-populate the update form
+    setImagePreview(member.image || "/placeholder.jpg"); // Set initial image preview
   };
 
   const handleInputChange = (e) => {
@@ -69,7 +69,7 @@ const ViewStalls = () => {
       const authToken = localStorage.getItem("authToken");
 
       await axios.put(
-        `https://tzm-1.onrender.com/api/stalls/${selectedStall._id}`,
+        `https://tzm-1.onrender.com/api/coreteam/${selectedMember._id}`,
         formData,
         {
           headers: {
@@ -78,30 +78,30 @@ const ViewStalls = () => {
           },
         }
       );
-      toast.success("Stall updated successfully!");
-      setSelectedStall(null); // Close modal
+      toast.success("Core team member updated successfully!");
+      setSelectedMember(null); // Close modal
       setImageFile(null); // Reset image file
-      fetchStalls(); // Refetch stalls from the backend
+      fetchCoreTeam(); // Refetch core team members from the backend
     } catch (error) {
-      console.error("Error updating stall:", error);
-      toast.error("Failed to update the stall.");
+      console.error("Error updating core team member:", error);
+      toast.error("Failed to update the core team member.");
     }
   };
 
-  const handleDelete = async (stallId) => {
+  const handleDelete = async (memberId) => {
     try {
       const authToken = localStorage.getItem("authToken");
 
-      await axios.delete(`https://tzm-1.onrender.com/api/stalls/${stallId}`, {
+      await axios.delete(`https://tzm-1.onrender.com/api/coreteam/${memberId}`, {
         headers: {
           Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
         },
       });
-      toast.success("Stall deleted successfully!");
-      setStalls((prev) => prev.filter((stall) => stall._id !== stallId));
+      toast.success("Core team member deleted successfully!");
+      setCoreTeam((prev) => prev.filter((member) => member._id !== memberId));
     } catch (error) {
-      console.error("Error deleting stall:", error);
-      toast.error("Failed to delete the stall.");
+      console.error("Error deleting core team member:", error);
+      toast.error("Failed to delete the core team member.");
     }
   };
 
@@ -109,33 +109,33 @@ const ViewStalls = () => {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h2 className="text-2xl font-bold text-center mb-6">Stalls</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Core Team Members</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {stalls.map((stall) => (
+        {coreTeam.map((member) => (
           <div
-            key={stall._id}
+            key={member._id}
             className="bg-gradient-to-r from-teal-500 to-blue-600 shadow-xl rounded-lg overflow-hidden"
           >
             <div className="w-full h-40 overflow-hidden bg-gray-700">
               <img
-                src={stall.image || "/placeholder.jpg"}
-                alt={stall.name}
+                src={member.image || "/placeholder.jpg"}
+                alt={member.name}
                 className="w-full h-full object-contain"
               />
             </div>
             <div className="p-4 text-white">
-              <h3 className="text-lg font-semibold">{stall.name.toUpperCase()}</h3>
-              <p className="text-sm">Position: {stall.position}</p>
+              <h3 className="text-lg font-semibold">{member.name.toUpperCase()}</h3>
+              <p className="text-sm">Position: {member.position}</p>
               <div className="flex justify-between mt-4">
                 <button
-                  onClick={() => handleUpdateClick(stall)}
+                  onClick={() => handleUpdateClick(member)}
                   className="bg-[#17569ec5] hover:bg-[#17569ef7] text-white px-3 py-2 rounded"
                 >
                   <FaEdit className="inline mr-2" />
                   Update
                 </button>
                 <button
-                  onClick={() => handleDelete(stall._id)}
+                  onClick={() => handleDelete(member._id)}
                   className="bg-[#a81717f0] hover:bg-red-600 text-white px-3 py-2 rounded"
                 >
                   <FaTrash className="inline mr-2" />
@@ -148,7 +148,7 @@ const ViewStalls = () => {
       </div>
 
       {/* Update Modal */}
-      {selectedStall && (
+      {selectedMember && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div
             className="bg-black rounded-lg p-6 w-full max-w-md overflow-auto h-auto max-h-[80vh]"
@@ -158,7 +158,7 @@ const ViewStalls = () => {
               msOverflowStyle: "none",
             }}
           >
-            <h3 className="text-lg font-bold mb-4">Update Stall</h3>
+            <h3 className="text-lg font-bold mb-4">Update Core Team Member</h3>
             <label className="block mb-2">
               Name:
               <input
@@ -197,7 +197,7 @@ const ViewStalls = () => {
             </div>
             <div className="flex justify-end space-x-4 mt-4">
               <button
-                onClick={() => setSelectedStall(null)}
+                onClick={() => setSelectedMember(null)}
                 className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
               >
                 Cancel
@@ -216,4 +216,4 @@ const ViewStalls = () => {
   );
 };
 
-export default ViewStalls;
+export default Viewcoreteam;
