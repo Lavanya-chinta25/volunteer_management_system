@@ -11,7 +11,6 @@ const Viewteams = () => {
   const [imagePreview, setImagePreview] = useState("");
   const [imageFile, setImageFile] = useState(null);
 
-  // Fetch teams from API
   const fetchTeams = async () => {
     setLoading(true);
     try {
