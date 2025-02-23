@@ -26,7 +26,8 @@ module.exports = {
         glass: "blur(2px) brightness(1.2)",
       },
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
+        sans: ["Montserrat", "sans-serif"], 
+        serif: ["Lora", "serif"],
       },
     },
   },

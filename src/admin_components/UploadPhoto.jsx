@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Container, Paper, Typography, Button, InputLabel } from "@mui/material";
+import { CloudUpload } from "@mui/icons-material";
 
-const Uploadphoto = () => {
+const UploadPhoto = () => {
   const [photo, setPhoto] = useState(null);
 
   const handlePhotoChange = (e) => {
@@ -18,21 +19,16 @@ const Uploadphoto = () => {
       return;
     }
 
-    // Create a FormData object to send the file
     const formData = new FormData();
     formData.append("photo", photo);
 
     try {
-      // Get the auth token from localStorage
       const authToken = localStorage.getItem("authToken");
 
-      // Send the POST request with the Authorization header
       const response = await fetch("https://tzm-1.onrender.com/api/auth/upload-photo", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
-        },
-        body: formData, // Attach the photo
+        headers: { Authorization: `Bearer ${authToken}` },
+        body: formData,
       });
 
       const data = await response.json();
@@ -47,37 +43,71 @@ const Uploadphoto = () => {
       toast.error("An error occurred. Please try again.");
     }
 
-    // Reset photo field
+    // Reset
     setPhoto(null);
-    e.target.reset(); // Reset file input to show "No file chosen"
+    e.target.reset();
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-white">Upload Photo</h2>
-      <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
-        {/* Upload Photo Field */}
-        <div>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoChange}
-            className="w-full p-2 mt-1 rounded-md placeholder-gray-400 text-white focus:shadow-[0_0_10px_rgba(255,255,255,0.7)] focus:outline-none"
-          />
-        </div>
+    <Container maxWidth="sm" sx={{ marginTop: 5, padding: 2 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          padding: 4,
+          borderRadius: 2,
+          backgroundColor: "rgba(61, 61, 112, 0.32)",
+          color: "#fff",
+          boxShadow: "none",
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="h5" component="h2" gutterBottom>
+          Upload Photo
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <InputLabel sx={{ color: "#fff", marginBottom: 1 }}>Select Image</InputLabel>
+          <Button
+            variant="contained"
+            component="label"
+            fullWidth
+            sx={{
+              backgroundColor: "#444",
+              color: "#fff",
+              "&:hover": { backgroundColor: "#555" },
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            startIcon={<CloudUpload />}
+          >
+            Choose File
+            <input type="file" accept="image/*" hidden onChange={handlePhotoChange} />
+          </Button>
 
-        {/* Upload Button */}
-        <div className="flex justify-center">
-          <button
+          {photo && (
+            <Typography variant="body2" sx={{ color: "white", marginTop: 1, fontStyle: "italic" }}>
+              Selected file: {photo.name}
+            </Typography>
+          )}
+
+          <Button
             type="submit"
-            className="bg-[#5f5f60d2] text-white p-2 rounded-md hover:bg-[#1d1d1d]"
+            variant="contained"
+            fullWidth
+            sx={{
+              marginTop: 2,
+              padding: 1,
+              fontSize: "1rem",
+              backgroundColor: "#4CAF50",
+              "&:hover": { backgroundColor: "#388E3C" },
+            }}
           >
             Upload Photo
-          </button>
-        </div>
-      </form>
-    </div>
+          </Button>
+        </form>
+      </Paper>
+    </Container>
   );
 };
 
-export default Uploadphoto;
+export default UploadPhoto;

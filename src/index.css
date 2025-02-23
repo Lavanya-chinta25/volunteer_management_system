@@ -1,22 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Lora:wght@400;500;600&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: "Montserrat", sans-serif;
+}
 .glassmorphic-bg {
   backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.1); 
+  background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); 
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
-
 
 @media (max-width: 768px) {
   .title {
-    padding-left: 2rem; /* Add spacing around the title */
-    font-size: 1.25rem; /* Smaller font size for mobile */
+    padding-left: 2rem;
+    font-size: 1.25rem;
   }
   .hamburger-menu {
-    font-size: 1.5rem; /* Reduce menu size for smaller devices */
+    font-size: 1.5rem;
   }
 }
 

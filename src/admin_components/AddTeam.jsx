@@ -1,24 +1,41 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import {
+  Container,
+  Paper,
+  Typography,
+  Grid,
+  TextField,
+  Button,
+  InputLabel,
+  InputAdornment,
+} from "@mui/material";
+import { CheckCircle, Error, CloudUpload } from "@mui/icons-material";
 
 const AddTeam = () => {
   const [formData, setFormData] = useState({
     teamName: "",
     teamImage: null,
     teamPosition: "",
-    teamPriority: "", // Added teamPriority field
+    teamPriority: "", 
   });
 
-  const fileInputRef = useRef(null); // Ref for the file input
+  const [errors, setErrors] = useState({
+    teamName: "",
+    teamPosition: "",
+    teamPriority: "",
+  });
+
+  const fileInputRef = useRef(null);
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: name === "teamImage" ? files[0] : value,
     }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = async (e) => {
@@ -26,13 +43,19 @@ const AddTeam = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     const { teamName, teamImage, teamPosition, teamPriority } = formData;
+    let newErrors = {};
 
-    if (!teamName || !teamImage || !teamPosition || teamPriority === "") {
-      toast.error("All fields are required.");
+    if (!teamName) newErrors.teamName = "Team name is required.";
+    if (!teamImage) toast.error("Team image is required.");
+    if (!teamPosition.trim()) newErrors.teamPosition = "Team position is required.";
+    if (teamPriority === "" || isNaN(teamPriority) || teamPriority < 1)
+      newErrors.teamPriority = "Priority must be a positive number.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
-    // Prepare form data for the request
     const formDataPayload = new FormData();
     formDataPayload.append("name", teamName);
     formDataPayload.append("image", teamImage);
@@ -40,108 +63,106 @@ const AddTeam = () => {
     formDataPayload.append("priority", teamPriority);
 
     try {
-      // Get the auth token from localStorage
       const authToken = localStorage.getItem("authToken");
-
-      // Send POST request to backend with Bearer token
-      const response = await axios.post(
-        "https://tzm-1.onrender.com/api/teams", // Backend endpoint
-        formDataPayload,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${authToken}`, // Add token in Authorization header
-          },
-        }
-      );
-
-      toast.success("Team added successfully!");
-      console.log("Response:", response.data);
-
-      // Reset form and clear file input
-      setFormData({
-        teamName: "",
-        teamImage: null,
-        teamPosition: "",
-        teamPriority: "",
+      await axios.post("https://tzm-1.onrender.com/api/teams", formDataPayload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${authToken}`,
+        },
       });
-
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ""; // Clear the file input value
-      }
+      toast.success("Team added successfully!");
+      setFormData({ teamName: "", teamImage: null, teamPosition: "", teamPriority: "" });
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
-      console.error("Error adding team:", error.response || error);
       toast.error("Failed to add team. Please try again.");
     }
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-white">Add Team</h2>
-      <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
-        {/* Team Name Field */}
-        <div>
-          <label className="text-white">Team Name:</label>
-          <input
-            type="text"
-            name="teamName"
-            value={formData.teamName}
-            onChange={handleInputChange}
-            className="w-full p-2 mt-1 rounded-md placeholder-gray-400 text-black focus:shadow-[0_0_10px_rgba(255,255,255,0.7)] focus:outline-none"
-            placeholder="Enter Team Name"
-          />
-        </div>
+    <Container maxWidth="sm" sx={{ marginTop: 5, padding: 2 }}>
+      <Paper elevation={3} sx={{ padding: 4, borderRadius: 2, backgroundColor: "rgba(61, 61, 112, 0.32)", color: "#fff", boxShadow: "none" }}>
+        <Typography variant="h5" component="h2" align="center" gutterBottom>
+          Add Team
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            {[
+              { name: "teamName", label: "Team Name" },
+              { name: "teamPosition", label: "Team Position" },
+              { name: "teamPriority", label: "Team Priority", type: "number" },
+            ].map((field) => (
+              <Grid item xs={12} key={field.name}>
+                <TextField
+                  fullWidth
+                  label={field.label}
+                  name={field.name}
+                  type={field.type || "text"}
+                  value={formData[field.name]}
+                  onChange={handleInputChange}
+                  error={!!errors[field.name]}
+                  helperText={errors[field.name]}
+                  sx={{
+                    backgroundColor: "transparent",
+                    borderRadius: 1,
+                    input: { color: "white", fontSize: "1.2rem" },
+                    "& label": { color: "white" },
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "white" },
+                      "&:hover fieldset": { borderColor: "#ccc" },
+                      "&.Mui-focused fieldset": { borderColor: "green" },
+                    },
+                  }}
+                  InputLabelProps={{ style: { color: "white" } }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {formData[field.name] && !errors[field.name] ? (
+                          <CheckCircle sx={{ color: "green" }} />
+                        ) : (
+                          errors[field.name] && <Error sx={{ color: "red" }} />
+                        )}
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+            ))}
 
-        {/* Image Upload Field */}
-        <div>
-          <label className="text-white">Team Image:</label>
-          <input
-            type="file"
-            name="teamImage"
-            accept="image/*"
-            onChange={handleInputChange}
-            className="w-full p-2 mt-1 rounded-md text-white focus:shadow-[0_0_10px_rgba(255,255,255,0.7)] focus:outline-none"
-            ref={fileInputRef} // Attach ref to the file input
-          />
-        </div>
+            <Grid item xs={12}>
+              <InputLabel htmlFor="teamImage" sx={{ color: "#fff" }}>
+                Team Image
+              </InputLabel>
+              <Button
+                variant="contained"
+                component="label"
+                fullWidth
+                sx={{ marginTop: 1, backgroundColor: "#444", color: "#fff", "&:hover": { backgroundColor: "#555" } }}
+                startIcon={<CloudUpload />}
+              >
+                Choose File
+                <input type="file" id="teamImage" name="teamImage" accept="image/*" onChange={handleInputChange} ref={fileInputRef} hidden />
+              </Button>
+              {formData.teamImage && (
+                <Typography variant="body2" sx={{ color: "white", marginTop: 1, fontSize: "0.9rem", fontStyle: "italic" }}>
+                  Selected file: {formData.teamImage.name}
+                </Typography>
+              )}
+            </Grid>
 
-        {/* Team Position Field */}
-        <div>
-          <label className="text-white">Team Position:</label>
-          <input
-            type="text"
-            name="teamPosition"
-            value={formData.teamPosition}
-            onChange={handleInputChange}
-            className="w-full p-2 mt-1 rounded-md placeholder-gray-400 text-black focus:shadow-[0_0_10px_rgba(255,255,255,0.7)] focus:outline-none"
-            placeholder="Enter Team Position"
-          />
-        </div>
-
-        {/* Team Priority Field */}
-        <div>
-          <label className="text-white">Team Priority:</label>
-          <input
-            type="number"
-            name="teamPriority"
-            value={formData.teamPriority}
-            onChange={handleInputChange}
-            className="w-full p-2 mt-1 rounded-md placeholder-gray-400 text-black focus:shadow-[0_0_10px_rgba(255,255,255,0.7)] focus:outline-none"
-            placeholder="Enter Team Priority (numeric value)"
-          />
-        </div>
-
-        {/* Add Team Button */}
-        <div className="flex justify-center">
-          <button
-            type="submit"
-            className="bg-[#5f5f60d2] text-white font-semibold p-2 rounded-lg hover:bg-[#292929] transition duration-300"
-          >
-            Add Team
-          </button>
-        </div>
-      </form>
-    </div>
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{ marginTop: 2, padding: 1, fontSize: "1rem", backgroundColor: "#4CAF50", "&:hover": { backgroundColor: "#388E3C" } }}
+              >
+                Add Team
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      </Paper>
+    </Container>
   );
 };
 
