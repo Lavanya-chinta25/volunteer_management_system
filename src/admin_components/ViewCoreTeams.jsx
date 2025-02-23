@@ -2,46 +2,43 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Card, CardContent, Typography, Button, Modal, Box, TextField } from "@mui/material";
 
-const Viewcoreteam = () => {
+const ViewCoreTeam = () => {
   const [coreTeam, setCoreTeam] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedMember, setSelectedMember] = useState(null); // For the update modal
+  const [selectedMember, setSelectedMember] = useState(null);
   const [updateData, setUpdateData] = useState({});
-  const [imagePreview, setImagePreview] = useState(""); // Preview the selected image
-  const [imageFile, setImageFile] = useState(null); // Store the selected image file
-
-  // Fetch core team members from the API
-  const fetchCoreTeam = async () => {
-    setLoading(true);
-    try {
-      const authToken = localStorage.getItem("authToken");
-
-      const response = await axios.get(
-        "https://tzm-1.onrender.com/api/coreteam",
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
-          },
-        }
-      );
-      setCoreTeam(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching core team members:", error);
-      toast.error("Failed to fetch core team data.");
-      setLoading(false);
-    }
-  };
+  const [imagePreview, setImagePreview] = useState("");
+  const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
     fetchCoreTeam();
   }, []);
 
+  const fetchCoreTeam = async () => {
+    setLoading(true);
+    try {
+      const authToken = localStorage.getItem("authToken");
+      const response = await axios.get("https://tzm-1.onrender.com/api/coreteam", {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      setCoreTeam(response.data);
+      setLoading(false);
+    } catch (error) {
+      toast.error("Failed to fetch core team data.");
+      setLoading(false);
+    }
+  };
+
   const handleUpdateClick = (member) => {
     setSelectedMember(member);
-    setUpdateData({ ...member }); // Pre-populate the update form
-    setImagePreview(member.image || "/placeholder.jpg"); // Set initial image preview
+    setUpdateData({ ...member });
+    setImagePreview(member.image || "/placeholder.jpg");
   };
 
   const handleInputChange = (e) => {
@@ -53,7 +50,7 @@ const Viewcoreteam = () => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
-      setImagePreview(URL.createObjectURL(file)); // Preview selected image
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -61,47 +58,32 @@ const Viewcoreteam = () => {
     const formData = new FormData();
     formData.append("name", updateData.name);
     formData.append("position", updateData.position);
-    if (imageFile) {
-      formData.append("image", imageFile); // Add image file to the form data
-    }
+    if (imageFile) formData.append("image", imageFile);
 
     try {
       const authToken = localStorage.getItem("authToken");
-
-      await axios.put(
-        `https://tzm-1.onrender.com/api/coreteam/${selectedMember._id}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      toast.success("Core team member updated successfully!");
-      setSelectedMember(null); // Close modal
-      setImageFile(null); // Reset image file
-      fetchCoreTeam(); // Refetch core team members from the backend
+      await axios.put(`https://tzm-1.onrender.com/api/coreteam/${selectedMember._id}`, formData, {
+        headers: { Authorization: `Bearer ${authToken}`, "Content-Type": "multipart/form-data" },
+      });
+      toast.success("Updated successfully!");
+      setSelectedMember(null);
+      setImageFile(null);
+      fetchCoreTeam();
     } catch (error) {
-      console.error("Error updating core team member:", error);
-      toast.error("Failed to update the core team member.");
+      toast.error("Update failed.");
     }
   };
 
   const handleDelete = async (memberId) => {
     try {
       const authToken = localStorage.getItem("authToken");
-
       await axios.delete(`https://tzm-1.onrender.com/api/coreteam/${memberId}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
-        },
+        headers: { Authorization: `Bearer ${authToken}` },
       });
-      toast.success("Core team member deleted successfully!");
+      toast.success("Deleted successfully!");
       setCoreTeam((prev) => prev.filter((member) => member._id !== memberId));
     } catch (error) {
-      console.error("Error deleting core team member:", error);
-      toast.error("Failed to delete the core team member.");
+      toast.error("Delete failed.");
     }
   };
 
@@ -109,111 +91,59 @@ const Viewcoreteam = () => {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h2 className="text-2xl font-bold text-center mb-6">Core Team Members</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <Typography variant="h4" align="center" gutterBottom>
+        Core Team Members
+      </Typography>
+      <Swiper modules={[Navigation]} navigation spaceBetween={20} slidesPerView={3}>
         {coreTeam.map((member) => (
-          <div
-            key={member._id}
-            className="bg-gradient-to-r from-teal-500 to-blue-600 shadow-xl rounded-lg overflow-hidden"
-          >
-            <div className="w-full h-40 overflow-hidden bg-gray-700">
-              <img
-                src={member.image || "/placeholder.jpg"}
-                alt={member.name}
-                className="w-full h-full object-contain"
+          <SwiperSlide key={member._id}>
+            <Card sx={{ width: 280, m: "auto", textAlign: "center", boxShadow: 3, borderRadius: 3, overflow: "hidden" }}>
+              <img 
+                src={member.image || "/placeholder.jpg"} 
+                alt={member.name} 
+                style={{ 
+                  width: "100%", 
+                  height: "250px", 
+                  objectFit: "cover", 
+                  objectPosition: "top center", 
+                  borderRadius: "12px 12px 0 0" 
+                }}
               />
-            </div>
-            <div className="p-4 text-white">
-              <h3 className="text-lg font-semibold">{member.name.toUpperCase()}</h3>
-              <p className="text-sm">Position: {member.position}</p>
-              <div className="flex justify-between mt-4">
-                <button
-                  onClick={() => handleUpdateClick(member)}
-                  className="bg-[#17569ec5] hover:bg-[#17569ef7] text-white px-3 py-2 rounded"
-                >
-                  <FaEdit className="inline mr-2" />
-                  Update
-                </button>
-                <button
-                  onClick={() => handleDelete(member._id)}
-                  className="bg-[#a81717f0] hover:bg-red-600 text-white px-3 py-2 rounded"
-                >
-                  <FaTrash className="inline mr-2" />
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
+              <CardContent sx={{ padding: 2 }}>
+                <Typography variant="h6" sx={{ fontSize: "1rem", fontWeight: "bold" }}>{member.name}</Typography>
+                <Typography variant="body2" color="textSecondary" sx={{ fontSize: "0.85rem" }}>
+                  {member.position}
+                </Typography>
+                <Box mt={2} display="flex" justifyContent="center" gap={1}>
+                  <Button variant="contained" color="primary" size="small" onClick={() => handleUpdateClick(member)}>
+                    <FaEdit /> Update
+                  </Button>
+                  <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete(member._id)}>
+                    <FaTrash /> Delete
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </SwiperSlide>
         ))}
-      </div>
+      </Swiper>
 
       {/* Update Modal */}
-      {selectedMember && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div
-            className="bg-black rounded-lg p-6 w-full max-w-md overflow-auto h-auto max-h-[80vh]"
-            style={{
-              overflowY: "scroll",
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-            }}
-          >
-            <h3 className="text-lg font-bold mb-4">Update Core Team Member</h3>
-            <label className="block mb-2">
-              Name:
-              <input
-                type="text"
-                name="name"
-                value={updateData.name || ""}
-                onChange={handleInputChange}
-                className="w-full border rounded p-2 text-black"
-              />
-            </label>
-            <label className="block mb-2">
-              Position:
-              <input
-                type="text"
-                name="position"
-                value={updateData.position || ""}
-                onChange={handleInputChange}
-                className="w-full border rounded p-2 text-black"
-              />
-            </label>
-            <label className="block mb-2">
-              Image:
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="w-full border rounded p-2"
-              />
-            </label>
-            <div className="mt-2">
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-full h-40 object-contain border rounded"
-              />
-            </div>
-            <div className="flex justify-end space-x-4 mt-4">
-              <button
-                onClick={() => setSelectedMember(null)}
-                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleUpdate}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Modal open={!!selectedMember} onClose={() => setSelectedMember(null)}>
+        <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, maxWidth: 400, mx: "auto", mt: 10 }}>
+          <Typography variant="h6">Update Core Team Member</Typography>
+          <TextField label="Name" fullWidth margin="normal" name="name" value={updateData.name || ""} onChange={handleInputChange} />
+          <TextField label="Position" fullWidth margin="normal" name="position" value={updateData.position || ""} onChange={handleInputChange} />
+          <input type="file" accept="image/*" onChange={handleImageChange} style={{ margin: "10px 0" }} />
+          {imagePreview && <img src={imagePreview} alt="Preview" style={{ width: "100%", height: 120, objectFit: "cover" }} />}
+          <Box mt={2} display="flex" justifyContent="space-between">
+            <Button variant="outlined" onClick={() => setSelectedMember(null)}>Cancel</Button>
+            <Button variant="contained" color="primary" onClick={handleUpdate}>Save</Button>
+          </Box>
+        </Box>
+      </Modal>
     </div>
   );
 };
 
-export default Viewcoreteam;
+export default ViewCoreTeam;
