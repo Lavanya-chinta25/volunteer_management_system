@@ -3,6 +3,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { FaUsers, FaStore, FaUsersCog, FaHandHoldingUsd, FaIdCard, FaUpload, FaSignOutAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
+
+import HeroScreen from "./HeroScreen";
+
 import AddVolunteer from "../admin_components/AddVolunteer";
 import GenerateIDCards from "../admin_components/Generate";
 import ViewVolunteers from "../admin_components/ViewVolunteers";
@@ -19,8 +22,8 @@ import AddCoreTeam from "../admin_components/AddCoreTeam";
 
 const Dashboard = () => {
   const [role, setRole] = useState("");
-  const [activeMain, setActiveMain] = useState("Volunteers");
-  const [activeSub, setActiveSub] = useState("View Volunteers");
+  const [activeMain, setActiveMain] = useState("");
+  const [activeSub, setActiveSub] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
@@ -73,13 +76,19 @@ const Dashboard = () => {
   ];
 
   const handleMainClick = (main) => {
-    setActiveMain(main);
-    if (sidebarItems.find((item) => item.name === main)?.sub.length > 0) {
-      setActiveSub(sidebarItems.find((item) => item.name === main)?.sub[0]);
+    if (activeMain === main) {
+      setActiveMain("");
+      setActiveSub("");
     } else {
-      setActiveSub(main);
+      setActiveMain(main);
+      if (sidebarItems.find((item) => item.name === main)?.sub.length > 0) {
+        setActiveSub(sidebarItems.find((item) => item.name === main)?.sub[0]);
+      } else {
+        setActiveSub(main);
+      }
     }
   };
+  
 
   const handleSubClick = (sub) => {
     setActiveSub(sub);
@@ -102,6 +111,8 @@ const Dashboard = () => {
   }, [isSidebarOpen]);
 
   const renderComponent = () => {
+    if (activeMain === "") return <HeroScreen />; 
+    
     const components = {
       "Add Volunteers": <AddVolunteer />,
       "Generate ID Cards": <GenerateIDCards />,
@@ -117,7 +128,11 @@ const Dashboard = () => {
       "View Coreteam": <Viewcoreteam />,
       "Add Coreteam": <AddCoreTeam />,
     };
-    return activeSub === "Logout" ? handleLogout() : components[activeSub] || <h2>Welcome to Dashboard</h2>;
+    if (activeSub === "Logout") {
+      return handleLogout();
+    }
+  
+    return components[activeSub] || <HeroScreen />;
   };
 
   const handleLogout = () => {
