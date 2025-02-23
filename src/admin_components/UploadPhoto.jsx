@@ -49,7 +49,7 @@ const UploadPhoto = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ marginTop: 5, padding: 2 }}>
+    <Container maxWidth="sm" sx={{ marginTop: 10, padding: 2 }}>
       <Paper
         elevation={3}
         sx={{

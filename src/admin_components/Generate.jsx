@@ -80,18 +80,22 @@ const GenerateIDCards = () => {
   };
 
   return (
-    <div className="text-white">
-      <h2 className="text-2xl font-bold mb-4">Generate ID Cards</h2>
-      <button
-        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onClick={fetchVolunteers}
-      >
-        Fetch Volunteers
-      </button>
+    <div className="container mx-auto p-6 bg-gray-900 text-white rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold mb-4 text-center">Generate ID Cards</h2>
+      
+      <div className="flex justify-center">
+        <button
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={fetchVolunteers}
+        >
+          Fetch Volunteers
+        </button>
+      </div>
+
       {volunteers.length > 0 && (
-        <div>
-          <h3 className="mt-4 mb-2 text-lg font-semibold">Preview:</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold text-center">Preview:</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
             {volunteers.map((volunteer) => (
               <div
                 key={volunteer._id}
@@ -102,36 +106,34 @@ const GenerateIDCards = () => {
                   alt="Volunteer"
                   className="w-24 h-24 rounded-full mb-2"
                 />
-                <p className="text-lg font-bold">
-                  <FaUser className="inline-block mr-2 text-blue-600" />
-                  {volunteer.name}
+                <p className="text-lg font-bold flex items-center">
+                  <FaUser className="mr-2 text-blue-600" /> {volunteer.name}
                 </p>
-                <p className="text-sm text-gray-700">
-                  <FaRegAddressCard className="inline-block mr-2 text-green-600" />
-                  ID: {volunteer.tzId}
+                <p className="text-sm text-gray-700 flex items-center">
+                  <FaRegAddressCard className="mr-2 text-green-600" /> ID: {volunteer.tzId}
                 </p>
-                <p className="text-sm text-gray-700">
-                  <FaUserTag className="inline-block mr-2 text-purple-600" />
-                  Role: {volunteer.role}
+                <p className="text-sm text-gray-700 flex items-center">
+                  <FaUserTag className="mr-2 text-purple-600" /> Role: {volunteer.role}
                 </p>
-                <p className="text-sm text-gray-700">
-                  <FaUniversity className="inline-block mr-2 text-yellow-600" />
-                  Branch: {volunteer.branch} | Year: {volunteer.year}
+                <p className="text-sm text-gray-700 flex items-center">
+                  <FaUniversity className="mr-2 text-yellow-600" /> Branch: {volunteer.branch} | Year: {volunteer.year}
                 </p>
-                <p className="text-sm text-gray-700">
-                  <FaPhone className="inline-block mr-2 text-red-600" />
-                  Phone: {volunteer.phone}
+                <p className="text-sm text-gray-700 flex items-center">
+                  <FaPhone className="mr-2 text-red-600" /> Phone: {volunteer.phone}
                 </p>
                 <p className="text-sm text-gray-700">Club: {volunteer.club}</p>
               </div>
             ))}
           </div>
-          <button
-            className="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-            onClick={generateIDCards}
-          >
-            Download ID Cards
-          </button>
+
+          <div className="flex justify-center mt-6">
+            <button
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              onClick={generateIDCards}
+            >
+              Download ID Cards
+            </button>
+          </div>
         </div>
       )}
     </div>
