@@ -76,13 +76,19 @@ const Dashboard = () => {
   ];
 
   const handleMainClick = (main) => {
-    setActiveMain(main);
-    if (sidebarItems.find((item) => item.name === main)?.sub.length > 0) {
-      setActiveSub(sidebarItems.find((item) => item.name === main)?.sub[0]);
+    if (activeMain === main) {
+      setActiveMain("");
+      setActiveSub("");
     } else {
-      setActiveSub(main);
+      setActiveMain(main);
+      if (sidebarItems.find((item) => item.name === main)?.sub.length > 0) {
+        setActiveSub(sidebarItems.find((item) => item.name === main)?.sub[0]);
+      } else {
+        setActiveSub(main);
+      }
     }
   };
+  
 
   const handleSubClick = (sub) => {
     setActiveSub(sub);
@@ -105,6 +111,8 @@ const Dashboard = () => {
   }, [isSidebarOpen]);
 
   const renderComponent = () => {
+    if (activeMain === "") return <HeroScreen />; 
+    
     const components = {
       "Add Volunteers": <AddVolunteer />,
       "Generate ID Cards": <GenerateIDCards />,
