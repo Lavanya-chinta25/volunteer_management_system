@@ -1,15 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import {
-  Container,
-  Paper,
-  Typography,
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  CardMedia,
-} from "@mui/material";
 import { FaUser, FaPhone, FaUserTag, FaUniversity, FaRegAddressCard } from "react-icons/fa";
 
 const GenerateIDCards = () => {
@@ -20,11 +10,14 @@ const GenerateIDCards = () => {
     try {
       const authToken = localStorage.getItem("authToken");
 
-      const response = await axios.get("https://tzm-1.onrender.com/api/auth/volunteers", {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const response = await axios.get(
+        "https://tzm-1.onrender.com/api/auth/volunteers",
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Send the auth token as a Bearer token
+          },
+        }
+      );
       setVolunteers(response.data.volunteers);
     } catch (error) {
       console.error("Error fetching volunteers:", error);
@@ -40,14 +33,14 @@ const GenerateIDCards = () => {
 
       const ctx = canvas.getContext("2d");
 
-      // Gradient background
+      // Draw gradient background with border
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      gradient.addColorStop(0, "#222");
-      gradient.addColorStop(1, "#0d47a1");
+      gradient.addColorStop(0, "#000000");
+      gradient.addColorStop(1, "#1e90ff");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.strokeStyle = "#fff";
+      ctx.strokeStyle = "#ffffff";
       ctx.lineWidth = 5;
       ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
@@ -59,16 +52,16 @@ const GenerateIDCards = () => {
         };
         img.src = volunteer.photo;
       } else {
-        ctx.fillStyle = "#fff";
+        ctx.fillStyle = "#ffffff";
         ctx.fillRect(20, 20, 100, 100);
         ctx.font = "bold 18px Arial";
-        ctx.fillStyle = "#000";
+        ctx.fillStyle = "#000000";
         ctx.fillText("No Photo", 30, 70);
       }
 
       // Add text details
       ctx.font = "bold 18px Arial";
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = "#ffffff";
 
       ctx.fillText(`Name: ${volunteer.name}`, 150, 50);
       ctx.fillText(`ID: ${volunteer.tzId}`, 150, 90);
@@ -87,116 +80,61 @@ const GenerateIDCards = () => {
   };
 
   return (
-    <Container
-      maxWidth="md"
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-      }}
-    >
-      <Paper
-        elevation={5}
-        sx={{
-          padding: 4,
-          textAlign: "center",
-          borderRadius: 3,
-          backgroundColor: "#1a1a2e",
-          color: "#ffffff",
-          boxShadow: "0px 0px 12px rgba(0, 255, 255, 0.5)",
-          width: "100%",
-          maxWidth: "700px",
-        }}
+    <div className="text-white">
+      <h2 className="text-2xl font-bold mb-4">Generate ID Cards</h2>
+      <button
+        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onClick={fetchVolunteers}
       >
-        <Typography variant="h5" gutterBottom sx={{ color: "#00e676", fontWeight: "bold" }}>
-          Generate ID Cards
-        </Typography>
-
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "#00e676",
-            color: "#000",
-            fontWeight: "bold",
-            "&:hover": { backgroundColor: "#00c853" },
-            marginBottom: 2,
-          }}
-          onClick={fetchVolunteers}
-        >
-          Fetch Volunteers
-        </Button>
-
-        {volunteers.length > 0 && (
-          <>
-            <Typography variant="h6" sx={{ marginTop: 3, color: "#00e676" }}>
-              Preview:
-            </Typography>
-
-            <Grid container spacing={3} sx={{ marginTop: 2 }}>
-              {volunteers.map((volunteer) => (
-                <Grid item xs={12} sm={6} md={4} key={volunteer._id}>
-                  <Card
-                    sx={{
-                      backgroundColor: "#2e2e3a",
-                      color: "#ffffff",
-                      borderRadius: 2,
-                      boxShadow: "0px 0px 10px rgba(0, 255, 255, 0.5)",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image={volunteer.photo || "https://via.placeholder.com/140"}
-                      alt="Volunteer"
-                    />
-                    <CardContent>
-                      <Typography variant="h6" sx={{ fontWeight: "bold", color: "#00e676" }}>
-                        <FaUser style={{ marginRight: 8, color: "#1976d2" }} />
-                        {volunteer.name}
-                      </Typography>
-                      <Typography variant="body2">
-                        <FaRegAddressCard style={{ marginRight: 6, color: "#388e3c" }} />
-                        ID: {volunteer.tzId}
-                      </Typography>
-                      <Typography variant="body2">
-                        <FaUserTag style={{ marginRight: 6, color: "#9c27b0" }} />
-                        Role: {volunteer.role}
-                      </Typography>
-                      <Typography variant="body2">
-                        <FaUniversity style={{ marginRight: 6, color: "#ff9800" }} />
-                        Branch: {volunteer.branch} | Year: {volunteer.year}
-                      </Typography>
-                      <Typography variant="body2">
-                        <FaPhone style={{ marginRight: 6, color: "#d32f2f" }} />
-                        Phone: {volunteer.phone}
-                      </Typography>
-                      <Typography variant="body2">Club: {volunteer.club}</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-
-            <Button
-              variant="contained"
-              sx={{
-                marginTop: 3,
-                backgroundColor: "#00e676",
-                color: "#000",
-                fontWeight: "bold",
-                "&:hover": { backgroundColor: "#00c853" },
-                boxShadow: "0px 0px 10px rgba(0, 255, 255, 0.5)",
-              }}
-              onClick={generateIDCards}
-            >
-              Download ID Cards
-            </Button>
-          </>
-        )}
-      </Paper>
-    </Container>
+        Fetch Volunteers
+      </button>
+      {volunteers.length > 0 && (
+        <div>
+          <h3 className="mt-4 mb-2 text-lg font-semibold">Preview:</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {volunteers.map((volunteer) => (
+              <div
+                key={volunteer._id}
+                className="bg-white text-black p-4 rounded-lg shadow-lg flex flex-col items-center"
+              >
+                <img
+                  src={volunteer.photo || "https://via.placeholder.com/100"}
+                  alt="Volunteer"
+                  className="w-24 h-24 rounded-full mb-2"
+                />
+                <p className="text-lg font-bold">
+                  <FaUser className="inline-block mr-2 text-blue-600" />
+                  {volunteer.name}
+                </p>
+                <p className="text-sm text-gray-700">
+                  <FaRegAddressCard className="inline-block mr-2 text-green-600" />
+                  ID: {volunteer.tzId}
+                </p>
+                <p className="text-sm text-gray-700">
+                  <FaUserTag className="inline-block mr-2 text-purple-600" />
+                  Role: {volunteer.role}
+                </p>
+                <p className="text-sm text-gray-700">
+                  <FaUniversity className="inline-block mr-2 text-yellow-600" />
+                  Branch: {volunteer.branch} | Year: {volunteer.year}
+                </p>
+                <p className="text-sm text-gray-700">
+                  <FaPhone className="inline-block mr-2 text-red-600" />
+                  Phone: {volunteer.phone}
+                </p>
+                <p className="text-sm text-gray-700">Club: {volunteer.club}</p>
+              </div>
+            ))}
+          </div>
+          <button
+            className="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            onClick={generateIDCards}
+          >
+            Download ID Cards
+          </button>
+        </div>
+      )}
+    </div>
   );
 };
 
