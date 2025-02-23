@@ -15,6 +15,7 @@ const ViewCoreTeam = () => {
   const [updateData, setUpdateData] = useState({});
   const [imagePreview, setImagePreview] = useState("");
   const [imageFile, setImageFile] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     fetchCoreTeam();
@@ -39,6 +40,7 @@ const ViewCoreTeam = () => {
     setSelectedMember(member);
     setUpdateData({ ...member });
     setImagePreview(member.image || "/placeholder.jpg");
+    setOpenModal(true);
   };
 
   const handleInputChange = (e) => {
@@ -62,13 +64,21 @@ const ViewCoreTeam = () => {
 
     try {
       const authToken = localStorage.getItem("authToken");
-      await axios.put(`https://tzm-1.onrender.com/api/coreteam/${selectedMember._id}`, formData, {
-        headers: { Authorization: `Bearer ${authToken}`, "Content-Type": "multipart/form-data" },
-      });
+      await axios.put(
+        `https://tzm-1.onrender.com/api/coreteam/${selectedMember._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       toast.success("Updated successfully!");
       setSelectedMember(null);
       setImageFile(null);
       fetchCoreTeam();
+      setOpenModal(false);
     } catch (error) {
       toast.error("Update failed.");
     }
@@ -90,56 +100,125 @@ const ViewCoreTeam = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div style={{ maxWidth: "1200px", margin: "auto", padding: "20px" }}>
       <Typography variant="h4" align="center" gutterBottom>
         Core Team Members
       </Typography>
-      <Swiper modules={[Navigation]} navigation spaceBetween={20} slidesPerView={3}>
-        {coreTeam.map((member) => (
-          <SwiperSlide key={member._id}>
-            <Card sx={{ width: 280, m: "auto", textAlign: "center", boxShadow: 3, borderRadius: 3, overflow: "hidden" }}>
-              <img 
-                src={member.image || "/placeholder.jpg"} 
-                alt={member.name} 
-                style={{ 
-                  width: "100%", 
-                  height: "250px", 
-                  objectFit: "cover", 
-                  objectPosition: "top center", 
-                  borderRadius: "12px 12px 0 0" 
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", // Smaller min size
+              gap: "15px", // Reduced gap
+              padding: "10px",
+              justifyContent: "center",
+            }}
+          >
+            {coreTeam.map((member) => (
+              <div
+                key={member._id}
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  maxWidth: "280px", // Limits max width for smaller cards
+                  paddingTop: "100%", // Adjusted to shrink height
+                  margin: "auto",
                 }}
-              />
-              <CardContent sx={{ padding: 2 }}>
-                <Typography variant="h6" sx={{ fontSize: "1rem", fontWeight: "bold" }}>{member.name}</Typography>
-                <Typography variant="body2" color="textSecondary" sx={{ fontSize: "0.85rem" }}>
-                  {member.position}
-                </Typography>
-                <Box mt={2} display="flex" justifyContent="center" gap={1}>
-                  <Button variant="contained" color="primary" size="small" onClick={() => handleUpdateClick(member)}>
-                    <FaEdit /> Update
-                  </Button>
-                  <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete(member._id)}>
-                    <FaTrash /> Delete
-                  </Button>
-                </Box>
-              </CardContent>
-            </Card>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+              >
+                {/* Image Container */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "75%", // Reduced height of image
+                    zIndex: 1,
+                  }}
+                >
+                  <img
+                    src={member.image || "/placeholder.jpg"}
+                    alt={member.name}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: "8px 8px 0 0",
+                    }}
+                  />
+                </div>
 
-      {/* Update Modal */}
-      <Modal open={!!selectedMember} onClose={() => setSelectedMember(null)}>
-        <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, maxWidth: 400, mx: "auto", mt: 10 }}>
-          <Typography variant="h6">Update Core Team Member</Typography>
-          <TextField label="Name" fullWidth margin="normal" name="name" value={updateData.name || ""} onChange={handleInputChange} />
-          <TextField label="Position" fullWidth margin="normal" name="position" value={updateData.position || ""} onChange={handleInputChange} />
-          <input type="file" accept="image/*" onChange={handleImageChange} style={{ margin: "10px 0" }} />
-          {imagePreview && <img src={imagePreview} alt="Preview" style={{ width: "100%", height: 120, objectFit: "cover" }} />}
-          <Box mt={2} display="flex" justifyContent="space-between">
-            <Button variant="outlined" onClick={() => setSelectedMember(null)}>Cancel</Button>
-            <Button variant="contained" color="primary" onClick={handleUpdate}>Save</Button>
-          </Box>
+                {/* Overlay Contact Card (Smaller) */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "60%", // Reduced overlap
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "85%", // Slightly smaller width
+                    minHeight: "80px", // Reduced height
+                    padding: "12px",
+                    textAlign: "center",
+                    borderRadius: "10px",
+                    boxShadow: "0 3px 8px rgba(0, 0, 0, 0.15)",
+                    backdropFilter: "blur(8px)",
+                    background: "rgba(11, 10, 10, 0.482)",
+                    zIndex: 2,
+                  }}
+                >
+                  <Typography style={{ fontWeight: "bold", fontSize: "14px", color: "#fff" }}>
+                    {member.name}
+                  </Typography>
+                  <Typography style={{ color: "#ddd", fontSize: "12px" }}>
+                    {member.position}
+                  </Typography>
+
+                  <div
+                    style={{
+                      marginTop: "8px",
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      style={{ fontSize: "12px", padding: "5px 8px" }}
+                      onClick={() => handleUpdateClick(member)}
+                    >
+                      <FaEdit /> Update
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      style={{ fontSize: "12px", padding: "5px 8px" }}
+                      onClick={() => handleDelete(member._id)}
+                    >
+                      <FaTrash /> Delete
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+
+
+      <Modal open={openModal} onClose={() => setOpenModal(false)}>
+        <Box style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 400, backgroundColor: "white", boxShadow: 24, padding: "20px", borderRadius: "8px" }}>
+          <Typography variant="h6" gutterBottom>
+            Update Member
+          </Typography>
+          <TextField label="Name" name="name" value={updateData.name} onChange={handleInputChange} fullWidth margin="normal" />
+          <TextField label="Position" name="position" value={updateData.position} onChange={handleInputChange} fullWidth margin="normal" />
+          <input accept="image/*" type="file" onChange={handleImageChange} style={{ marginTop: "10px" }} />
+          {imagePreview && <img src={imagePreview} alt="Preview" style={{ width: "100px", marginTop: "10px" }} />}
+          <div style={{ marginTop: "10px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+            <Button onClick={() => setOpenModal(false)}>Cancel</Button>
+            <Button onClick={handleUpdate} variant="contained" color="primary">Update</Button>
+          </div>
         </Box>
       </Modal>
     </div>

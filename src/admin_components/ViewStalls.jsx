@@ -110,42 +110,46 @@ const ViewStalls = () => {
   return (
     <div className="container mx-auto px-4 py-6">
       <h2 className="text-2xl font-bold text-center mb-6">Stalls</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4 justify-center">
         {stalls.map((stall) => (
           <div
             key={stall._id}
-            className="bg-gradient-to-r from-teal-500 to-blue-600 shadow-xl rounded-lg overflow-hidden"
+            className="relative w-full max-w-[280px] mx-auto"
+            style={{ paddingTop: "100%" }} // Maintain aspect ratio
           >
-            <div className="w-full h-40 overflow-hidden bg-gray-700">
+            {/* Image Container */}
+            <div className="absolute top-0 left-0 w-full h-[75%] z-10">
               <img
                 src={stall.image || "/placeholder.jpg"}
                 alt={stall.name}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover rounded-t-lg"
               />
             </div>
-            <div className="p-4 text-white">
-              <h3 className="text-lg font-semibold">{stall.name.toUpperCase()}</h3>
-              <p className="text-sm">Position: {stall.position}</p>
-              <div className="flex justify-between mt-4">
+
+            {/* Overlay Contact Card */}
+            <div className="absolute top-[60%] left-1/2 transform -translate-x-1/2 w-[85%] min-h-[80px] p-3 text-center rounded-lg shadow-md backdrop-blur-lg bg-black/50 z-20">
+              <h3 className="text-white font-bold text-sm">{stall.name.toUpperCase()}</h3>
+              <p className="text-gray-300 text-xs">Position: {stall.position}</p>
+
+              <div className="mt-2 flex justify-center gap-2">
                 <button
                   onClick={() => handleUpdateClick(stall)}
-                  className="bg-[#17569ec5] hover:bg-[#17569ef7] text-white px-3 py-2 rounded"
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 text-xs rounded flex items-center gap-1"
                 >
-                  <FaEdit className="inline mr-2" />
-                  Update
+                  <FaEdit /> Update
                 </button>
                 <button
                   onClick={() => handleDelete(stall._id)}
-                  className="bg-[#a81717f0] hover:bg-red-600 text-white px-3 py-2 rounded"
+                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-xs rounded flex items-center gap-1"
                 >
-                  <FaTrash className="inline mr-2" />
-                  Delete
+                  <FaTrash /> Delete
                 </button>
               </div>
             </div>
           </div>
         ))}
       </div>
+
 
       {/* Update Modal */}
       {selectedStall && (

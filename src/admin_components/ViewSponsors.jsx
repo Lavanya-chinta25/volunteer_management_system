@@ -110,42 +110,115 @@ const Viewsponsors = () => {
   return (
     <div className="container mx-auto px-4 py-6">
       <h2 className="text-2xl font-bold text-center mb-6">Sponsors</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {sponsors.map((sponsor) => (
+      <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+        gap: "15px",
+        padding: "10px",
+        justifyContent: "center",
+      }}
+    >
+      {sponsors.map((sponsor) => (
+        <div
+          key={sponsor._id}
+          style={{
+            position: "relative",
+            width: "100%",
+            maxWidth: "280px",
+            paddingTop: "100%",
+            margin: "auto",
+          }}
+        >
+          {/* Image Container */}
           <div
-            key={sponsor._id}
-            className="bg-gradient-to-r from-teal-500 to-blue-600 shadow-xl rounded-lg overflow-hidden"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "75%",
+              zIndex: 1,
+            }}
           >
-            <div className="w-full h-40 overflow-hidden bg-gray-700">
-              <img
-                src={sponsor.image || "/placeholder.jpg"}
-                alt={sponsor.name}
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div className="p-4 text-white">
-              <h3 className="text-lg font-semibold">{sponsor.name.toUpperCase()}</h3>
-              <p className="text-sm">Type: {sponsor.type}</p>
-              <div className="flex justify-between mt-4">
-                <button
-                  onClick={() => handleUpdateClick(sponsor)}
-                  className="bg-[#17569ec5] hover:bg-[#17569ef7] text-white px-3 py-2 rounded"
-                >
-                  <FaEdit className="inline mr-2" />
-                  Update
-                </button>
-                <button
-                  onClick={() => handleDelete(sponsor._id)}
-                  className="bg-[#a81717f0] hover:bg-red-600 text-white px-3 py-2 rounded"
-                >
-                  <FaTrash className="inline mr-2" />
-                  Delete
-                </button>
-              </div>
+            <img
+              src={sponsor.image || "/placeholder.jpg"}
+              alt={sponsor.name}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: "8px 8px 0 0",
+              }}
+            />
+          </div>
+
+          {/* Overlay Contact Card (Smaller) */}
+          <div
+            style={{
+              position: "absolute",
+              top: "60%",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "85%",
+              minHeight: "80px",
+              padding: "12px",
+              textAlign: "center",
+              borderRadius: "10px",
+              boxShadow: "0 3px 8px rgba(0, 0, 0, 0.15)",
+              backdropFilter: "blur(8px)",
+              background: "rgba(11, 10, 10, 0.482)",
+              zIndex: 2,
+            }}
+          >
+            <h3 style={{ fontWeight: "bold", fontSize: "14px", color: "#fff" }}>
+              {sponsor.name.toUpperCase()}
+            </h3>
+            <p style={{ color: "#ddd", fontSize: "12px" }}>Type: {sponsor.type}</p>
+
+            <div
+              style={{
+                marginTop: "8px",
+                display: "flex",
+                justifyContent: "center",
+                gap: "8px",
+              }}
+            >
+              <button
+                onClick={() => handleUpdateClick(sponsor)}
+                style={{
+                  backgroundColor: "#17569ec5",
+                  color: "white",
+                  padding: "5px 8px",
+                  fontSize: "12px",
+                  borderRadius: "5px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                }}
+              >
+                <FaEdit /> Update
+              </button>
+              <button
+                onClick={() => handleDelete(sponsor._id)}
+                style={{
+                  backgroundColor: "#a81717f0",
+                  color: "white",
+                  padding: "5px 8px",
+                  fontSize: "12px",
+                  borderRadius: "5px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                }}
+              >
+                <FaTrash /> Delete
+              </button>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
+    </div>
 
       {/* Update Modal */}
       {selectedsponsor && (

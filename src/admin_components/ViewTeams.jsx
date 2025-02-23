@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
-
+import { Button, Typography } from "@mui/material";
 const Viewteams = () => {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -106,42 +106,105 @@ const Viewteams = () => {
   return (
     <div className="container mx-auto px-4 py-6">
       <h2 className="text-2xl font-bold text-center mb-6">Teams</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {teams.map((team) => (
+      <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+        gap: "15px",
+        padding: "10px",
+        justifyContent: "center",
+      }}
+    >
+      {teams.map((team) => (
+        <div
+          key={team._id}
+          style={{
+            position: "relative",
+            width: "100%",
+            maxWidth: "280px",
+            paddingTop: "100%",
+            margin: "auto",
+          }}
+        >
+          {/* Image Container */}
           <div
-            key={team._id}
-            className="bg-gradient-to-r from-teal-500 to-blue-600 shadow-xl rounded-lg overflow-hidden"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "75%",
+              zIndex: 1,
+            }}
           >
-            <div className="w-full h-40 overflow-hidden bg-gray-700">
-              <img
-                src={team.image || "/placeholder.jpg"}
-                alt={team.name}
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div className="p-4 text-white">
-              <h3 className="text-lg font-semibold">{team.name.toUpperCase()}</h3>
-              <p className="text-sm">Position: {team.position}</p>
-              <div className="flex justify-between mt-4">
-                <button
-                  onClick={() => handleUpdateClick(team)}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded"
-                >
-                  <FaEdit className="inline mr-2" />
-                  Update
-                </button>
-                <button
-                  onClick={() => handleDelete(team._id)}
-                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded"
-                >
-                  <FaTrash className="inline mr-2" />
-                  Delete
-                </button>
-              </div>
+            <img
+              src={team.image || "/placeholder.jpg"}
+              alt={team.name}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: "8px 8px 0 0",
+              }}
+            />
+          </div>
+
+          {/* Overlay Contact Card */}
+          <div
+            style={{
+              position: "absolute",
+              top: "60%",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "85%",
+              minHeight: "80px",
+              padding: "12px",
+              textAlign: "center",
+              borderRadius: "10px",
+              boxShadow: "0 3px 8px rgba(0, 0, 0, 0.15)",
+              backdropFilter: "blur(8px)",
+              background: "rgba(11, 10, 10, 0.482)",
+              zIndex: 2,
+            }}
+          >
+            <Typography style={{ fontWeight: "bold", fontSize: "14px", color: "#fff" }}>
+              {team.name}
+            </Typography>
+            <Typography style={{ color: "#ddd", fontSize: "12px" }}>
+              {team.position}
+            </Typography>
+
+            <div
+              style={{
+                marginTop: "8px",
+                display: "flex",
+                justifyContent: "center",
+                gap: "8px",
+              }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ fontSize: "12px", padding: "5px 8px" }}
+                onClick={() => handleUpdateClick(team)}
+              >
+                <FaEdit /> Update
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                style={{ fontSize: "12px", padding: "5px 8px" }}
+                onClick={() => handleDelete(team._id)}
+              >
+                <FaTrash /> Delete
+              </Button>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
+    </div>
 
       {selectedTeam && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -207,3 +270,4 @@ const Viewteams = () => {
 };
 
 export default Viewteams;
+
