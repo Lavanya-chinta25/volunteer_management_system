@@ -19,8 +19,8 @@ import Viewsponsors from "../admin_components/ViewSponsors";
 import Addsponsor from "../admin_components/AddSponsors";
 import Viewcoreteam from "../admin_components/ViewCoreTeams";
 import AddCoreTeam from "../admin_components/AddCoreTeam";
-import ShowMessage from "../admin_components/ShowMessage";
-import SendMessage from "../admin_components/SendMessage";
+import ShowMessage from "../admin_components/showMessage";
+import SendMessage from "../admin_components/sendMessage";
 
 const Dashboard = () => {
   const [role, setRole] = useState("");
