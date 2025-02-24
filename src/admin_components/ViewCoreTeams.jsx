@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import { Card, CardContent, Typography, Button, Modal, Box, TextField } from "@mui/material";
+import { Typography, Button, Modal, Box, TextField } from "@mui/material";
 
 const ViewCoreTeam = () => {
   const [coreTeam, setCoreTeam] = useState([]);
@@ -133,6 +131,8 @@ const ViewCoreTeam = () => {
                     width: "100%",
                     height: "75%", // Reduced height of image
                     zIndex: 1,
+                    backgroundColor: "black", // Ensures the empty space is filled with white
+                    borderRadius: "8px 8px 0 0",
                   }}
                 >
                   <img
@@ -141,11 +141,12 @@ const ViewCoreTeam = () => {
                     style={{
                       width: "100%",
                       height: "100%",
-                      objectFit: "cover",
+                      objectFit: "contain", // Ensures the full image is visible
                       borderRadius: "8px 8px 0 0",
                     }}
                   />
                 </div>
+
 
                 {/* Overlay Contact Card (Smaller) */}
                 <div

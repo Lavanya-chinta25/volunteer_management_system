@@ -139,6 +139,8 @@ const Viewsponsors = () => {
               width: "100%",
               height: "75%",
               zIndex: 1,
+              backgroundColor: "black", // Ensures the empty space is filled with white
+              borderRadius: "8px 8px 0 0",
             }}
           >
             <img
@@ -147,7 +149,7 @@ const Viewsponsors = () => {
               style={{
                 width: "100%",
                 height: "100%",
-                objectFit: "cover",
+                objectFit: "contain",
                 borderRadius: "8px 8px 0 0",
               }}
             />

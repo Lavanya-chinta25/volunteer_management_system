@@ -162,7 +162,7 @@ const AddVolunteer = () => {
                   {field === "year" && ["P1", "P2", "E1", "E2", "E3", "E4"].map((option) => (
                     <MenuItem key={option} value={option}>{option}</MenuItem>
                   ))}
-                  {field === "club" && ["A Club", "B Club", "C Club", "D Club", "E Club", "F Club"].map((option) => (
+                  {field === "club" && ["Web Club", "Hospitality Club", "Marketing Club", "Infra Club", "PUC Club", "Workshop Club","Promotions Club","Disciplinary Club","Project Expo Club"].map((option) => (
                     <MenuItem key={option} value={option}>{option}</MenuItem>
                   ))}
                   {field === "role" && ["Admin", "Volunteer", "Core Team"].map((option) => (

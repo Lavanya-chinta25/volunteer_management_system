@@ -118,13 +118,14 @@ const ViewStalls = () => {
             style={{ paddingTop: "100%" }} // Maintain aspect ratio
           >
             {/* Image Container */}
-            <div className="absolute top-0 left-0 w-full h-[75%] z-10">
+            <div className="absolute top-0 left-0 w-full h-[75%] z-10 bg-black rounded-t-lg">
               <img
                 src={stall.image || "/placeholder.jpg"}
                 alt={stall.name}
-                className="w-full h-full object-cover rounded-t-lg"
+                className="w-full h-full object-contain rounded-t-lg"
               />
             </div>
+
 
             {/* Overlay Contact Card */}
             <div className="absolute top-[60%] left-1/2 transform -translate-x-1/2 w-[85%] min-h-[80px] p-3 text-center rounded-lg shadow-md backdrop-blur-lg bg-black/50 z-20">
