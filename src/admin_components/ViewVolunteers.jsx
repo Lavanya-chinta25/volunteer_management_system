@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaPhoneAlt, FaStar, FaIdBadge, FaUsers, FaEdit, FaTrash } from "react-icons/fa";
+import { FaPhoneAlt, FaStar, FaIdBadge, FaUsers, FaEdit, FaTrash, FaFileExcel } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } from "@mui/material";
+import * as XLSX from 'xlsx';
 
 const ViewVolunteers = () => {
   const [volunteers, setVolunteers] = useState([]);
@@ -20,6 +21,7 @@ const ViewVolunteers = () => {
       const response = await axios.get("https://tzm-1.onrender.com/api/auth/volunteers", {
         headers: { Authorization: `Bearer ${authToken}` },
       });
+      console.log(response.data);
       setVolunteers(response.data.volunteers);
     } catch (error) {
       console.error("Error fetching volunteers:", error);
@@ -34,6 +36,8 @@ const ViewVolunteers = () => {
       branch: volunteer.branch,
       club: volunteer.club,
       creditScore: volunteer.creditScore,
+      vid: volunteer.tzId,
+      password:volunteer.original
     });
     setOpenDialog(true);
   };
@@ -46,7 +50,7 @@ const ViewVolunteers = () => {
   const handleUpdate = async () => {
     try {
       const authToken = localStorage.getItem("authToken");
-      await axios.put(`https://tzm-1.onrender.com/api/auth/volunteers/${selectedVolunteer._id}`, updateData, {
+      await axios.put(`https://tzm-1.onrender.com/api/auth/volunteers/${selectedVolunteer.tzId}`, updateData, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       toast.success("Volunteer updated successfully!");
@@ -70,9 +74,51 @@ const ViewVolunteers = () => {
     }
   };
 
+  const downloadExcel = () => {
+    try {
+      
+      // Prepare data for Excel
+      const excelData = volunteers.map(volunteer => ({
+        
+        Name: volunteer.name,
+        TZID: volunteer.tzId,
+        Password: volunteer.original || 'N/A', // Include password if available
+        Branch: volunteer.branch,
+        Club: volunteer.club,
+        Phone: volunteer.phone,
+        'Credit Score': volunteer.creditScore
+      }));
+
+      // Create worksheet
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+      // Create workbook
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Volunteers");
+
+      // Generate Excel file
+      XLSX.writeFile(workbook, "volunteers_data.xlsx");
+      
+      toast.success("Excel file downloaded successfully!");
+    } catch (error) {
+      toast.error("Failed to download Excel file.");
+      console.error("Error downloading Excel:", error);
+    }
+  };
+
   return (
     <div className="p-6 min-h-screen flex flex-col items-center bg-gray-900">
       <h2 className="text-4xl font-bold text-white mb-8 uppercase tracking-wider">View Volunteers</h2>
+      
+      {/* Download Excel Button */}
+      <button
+        onClick={downloadExcel}
+        className="mb-6 flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors duration-200"
+      >
+        <FaFileExcel size={20} />
+        <span>Download Excel</span>
+      </button>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-6xl">
         {volunteers.map((volunteer) => (
           <div
@@ -107,7 +153,7 @@ const ViewVolunteers = () => {
                 </button>
                 <button
                   className="text-red-400 hover:text-red-300"
-                  onClick={() => handleDelete(volunteer._id)}
+                  onClick={() => handleDelete(volunteer.tzId)}
                 >
                   <FaTrash size={20} />
                 </button>
