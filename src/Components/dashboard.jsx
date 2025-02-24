@@ -70,6 +70,22 @@ const Dashboard = () => {
     setActiveSub(sub);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setIsSidebarOpen(false);
+      }
+    };
+    if (isSidebarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSidebarOpen]); 
+
   const renderComponent = () => {
     if (activeMain === "") return <HeroScreen />;
 
@@ -98,6 +114,9 @@ const Dashboard = () => {
       <ToastContainer position="top-center" autoClose={3000} hideProgressBar newestOnTop />
       <header className="w-full bg-gray-800 p-4 flex justify-center items-center fixed top-0 left-0 z-50">
         <h1 className="text-xl font-bold text-center w-full">VOLUNTEER MANAGEMENT SYSTEM</h1>
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="lg:hidden absolute right-4 text-xl">
+          {isSidebarOpen ? "✖" : "⋮"}
+        </button>
       </header>
       <div style={{
           overflowY: "auto",
