@@ -40,15 +40,15 @@ const Dashboard = () => {
       setRole(storedRole);
     }
   }, [navigate]);
-
+  console.log(role)
   const sidebarItems = [
-    ...(role === "admin" ?[{ name: "Volunteers", icon: <FaUsers />, sub:["Add Volunteers", "View Volunteers"]}]:[]),
-    { name: "Stalls", icon: <FaStore />, sub: role === "admin" ? ["Add Stalls", "View Stalls"] : ["View Stalls"] },
-    { name: "Team", icon: <FaUsersCog />, sub: role === "admin" ? ["Add Coreteam", "View Coreteam", "Add Team", "View Team"] : ["View Coreteam","View Team"] },
-    { name: "Sponsors", icon: <FaHandHoldingUsd />, sub: role === "admin" ? ["Add Sponsors", "View Sponsors"] : ["View Sponsors"] },
-    ...(role === "admin" ? [{ name: "Generate ID Cards", icon: <FaIdCard />, sub: [] }] : []),
+    ...(role === "Admin" ?[{ name: "Volunteers", icon: <FaUsers />, sub:["Add Volunteers", "View Volunteers"]}]:[]),
+    { name: "Stalls", icon: <FaStore />, sub: role === "Admin" ? ["Add Stalls", "View Stalls"] : ["View Stalls"] },
+    { name: "Team", icon: <FaUsersCog />, sub: role === "Admin" ? ["Add Coreteam", "View Coreteam", "Add Team", "View Team"] : ["View Coreteam","View Team"] },
+    { name: "Sponsors", icon: <FaHandHoldingUsd />, sub: role === "Admin" ? ["Add Sponsors", "View Sponsors"] : ["View Sponsors"] },
+    ...(role === "Admin" ? [{ name: "Generate ID Cards", icon: <FaIdCard />, sub: [] }] : []),
     { name: "Upload Photo", icon: <FaUpload />, sub: [] },
-    { name: "Message", icon: <FaEnvelope />, sub: role === "admin" ? ["Show Message", "Send Message"]: ["Send Message"]},
+    { name: "Message", icon: <FaEnvelope />, sub: role === "Admin" ? ["Show Message", "Send Message"]: ["Send Message"]},
     { name: "Logout", icon: <FaSignOutAlt />, sub: [] }
   ];
 
