@@ -208,7 +208,7 @@ const Generate = () => {
                 {/* Branch & Year */}
                 <div className="text-center mt-2">
                   <p className="text-lg text-white tracking-wider">
-                    {`E${volunteer.year}`}, {volunteer.branch}
+                    {`E${volunteer.year}`}, {volunteer.club}
                   </p>
                 </div>
               </div>
