@@ -47,6 +47,7 @@ const Dashboard = () => {
     { name: "Team", icon: <FaUsersCog />, sub: role === "Admin" ? ["Add Coreteam", "View Coreteam", "Add Team", "View Team"] : ["View Coreteam","View Team"] },
     { name: "Sponsors", icon: <FaHandHoldingUsd />, sub: role === "Admin" ? ["Add Sponsors", "View Sponsors"] : ["View Sponsors"] },
     ...(role === "Admin" ? [{ name: "Generate ID Cards", icon: <FaIdCard />, sub: [] }] : []),
+    ...(role === "Volunteer" ? [{ name: "Generate ID Card", icon: <FaIdCard />, sub: [] }] : []),
     { name: "Upload Photo", icon: <FaUpload />, sub: [] },
     { name: "Message", icon: <FaEnvelope />, sub: role === "Admin" ? ["Show Message", "Send Message"]: ["Send Message"]},
     { name: "Logout", icon: <FaSignOutAlt />, sub: [] }
@@ -90,7 +91,7 @@ const Dashboard = () => {
     if (activeMain === "") return <HeroScreen />;
 
     const components = {
-      "Add Volunteers": <AddVolunteer />, "View Volunteers": <ViewVolunteers />, "Generate ID Cards": <GenerateIDCards />, 
+      "Add Volunteers": <AddVolunteer />, "View Volunteers": <ViewVolunteers />, "Generate ID Cards": <GenerateIDCards />, "Generate ID Card": <GenerateIDCards />,
       "Add Stalls": <AddStalls />, "View Stalls": <ViewStalls />, "Upload Photo": <UploadPhoto />, "Give Credits": <GiveCredits />, 
       "Add Team": <AddTeam />, "View Team": <Viewteams />, "View Sponsors": <Viewsponsors />, "Add Sponsors": <Addsponsor />, 
       "View Coreteam": <Viewcoreteam />, "Add Coreteam": <AddCoreTeam />, "Show Message": <ShowMessage />, "Send Message": <SendMessage />
